@@ -7,7 +7,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 dataset = pd.read_csv('/content/Book.csv.csv')
 
 
-
+  
 
 X = dataset[['Total Beds', 'Number of Patients']]
 y = dataset['Total Beds Available ']
