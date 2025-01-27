@@ -33,8 +33,8 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
 # Evaluate the model
-accuracy = accuracy_score(y_test, y_pred)
-print(f"\nModel Accuracy: {accuracy * 100:.2f}%")
+#accuracy = accuracy_score(y_test, y_pred)
+#print(f"\nModel Accuracy: {accuracy * 100:.2f}%")
 
 S = str(input("Enter the Equipment you want: "))
 if(S=="ECG Machine"):
