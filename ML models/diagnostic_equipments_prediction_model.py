@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.preprocessing import LabelEncoder
 
 # Load the dataset
-file_path = "/content/Diagnostic Equipments dataset.csv"  # Replace with your file path
+file_path = "/content/Diagnostic Equipments.csv"  # Replace with your file path
 data = pd.read_csv(file_path)
 
 le = LabelEncoder()
@@ -33,8 +33,8 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
 # Evaluate the model
-#accuracy = accuracy_score(y_test, y_pred)
-#print(f"\nModel Accuracy: {accuracy * 100:.2f}%")
+accuracy = accuracy_score(y_test, y_pred)
+print(f"\nModel Accuracy: {accuracy * 100:.2f}%")
 
 S = str(input("Enter the Equipment you want: "))
 if(S=="ECG Machine"):
@@ -82,6 +82,8 @@ elif(S=="Laboratory Analyzers"):
 elif(S=="Ultrasound Machines"):
   print("Ultrasound Machines available are 20")
 elif(S=="ESR Analyzer"):
-  print("ESR Analyzer available are 4") 
+  print("ESR Analyzer available are 4")
+elif(S=="X-Ray Machines"):
+  print("X-Ray Machines Available are 5")   
 else:
   print(S ,"is not available") 
