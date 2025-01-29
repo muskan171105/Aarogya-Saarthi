@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
@@ -33,8 +35,8 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
 # Evaluate the model
-accuracy = accuracy_score(y_test, y_pred)
-print(f"\nModel Accuracy: {accuracy * 100:.2f}%")
+#accuracy = accuracy_score(y_test, y_pred)
+#print(f"\nModel Accuracy: {accuracy * 100:.2f}%")
 
 S = str(input("Enter the Equipment you want: "))
 if(S=="ECG Machine"):
@@ -87,3 +89,13 @@ elif(S=="X-Ray Machines"):
   print("X-Ray Machines Available are 5")   
 else:
   print(S ,"is not available") 
+# Visualization for stock availability
+sns.set(style="whitegrid")
+plt.figure(figsize=(12, 8))
+sorted_data = data.sort_values(by="Number of stocks available", ascending=False)
+sns.barplot(x="Number of stocks available", y="Diagnostic equipments", data=sorted_data, palette="Blues_r")
+
+plt.title("Stock Availability of Diagnostic Equipment", fontsize=16)
+plt.xlabel("Number of Stocks Available", fontsize=14)
+plt.ylabel("Diagnostic Equipment", fontsize=14)
+plt.show()
