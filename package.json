@@ -1,0 +1,19 @@
+{
+  "name": "jhu_techlions",
+  "version": "1.0.0",
+  "description": "Hospital Management App that is AI driven and Blockchain protected",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muskan171105/JHU_TechLions.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/muskan171105/JHU_TechLions/issues"
+  },
+  "homepage": "https://github.com/muskan171105/JHU_TechLions#readme"
+}
