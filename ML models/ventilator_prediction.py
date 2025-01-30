@@ -47,7 +47,7 @@ D = int(input("Enter the number of patients in ICU: "))
 if(D<100):
   print ("The number of ventilators available are", 100-D)
 else:
-  print("No ventilators are available") 
+  print(D-100, "ventilators are needed") 
 
 
 # 3. Feature Relationships with Target Variable
