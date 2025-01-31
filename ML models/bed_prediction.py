@@ -55,8 +55,8 @@ plt.plot([y_train.min(), y_train.max()], [y_train.min(), y_train.max()], 'k--', 
 A = 450
 B = int(input("Enter the number of patients: "))
 if B > A:
-    print("No beds available")
+    print(B - A, "more Beds are needed")
 elif A - B == 0:
-    print("No Beds available")
+    print("All the beds are in use")
 else:
     print(A - B, "Beds are available")

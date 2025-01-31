@@ -47,7 +47,7 @@ D = int(input("Enter the number of patients in ICU: "))
 if(D<100):
   print ("The number of ventilators available are", 100-D)
 else:
-  print("No ventilators are available") 
+  print(D-100, "ventilators are needed") 
 
 
 # 3. Feature Relationships with Target Variable
@@ -55,6 +55,6 @@ plt.figure(figsize=(8, 6))
 sns.scatterplot(data=data, x='Patients_in_ICU', y='Ventilators_Available', color='blue', label='Patients in ICU')
 plt.title('Patients in ICU vs Ventilators Available')
 plt.xlabel('Patients in ICU')
-plt.ylabel('Ventilators Available')
+plt.ylabel('Ventilators Availablity')
 plt.legend()
 plt.show()
