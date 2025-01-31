@@ -45,12 +45,6 @@ plt.ylabel('Beds Available')
 plt.plot([y_train.min(), y_train.max()], [y_train.min(), y_train.max()], 'k--', color='red')
 
 
-
-
-
-
-
-
 # Bed availability logic
 A = 450
 B = int(input("Enter the number of patients: "))
