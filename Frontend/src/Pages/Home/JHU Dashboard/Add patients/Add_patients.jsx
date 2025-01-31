@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "./style.CSS"; // Import your CSS file here
+import "./style.css"; // Import your CSS file here
 
 function Home() {
   useEffect(() => {
@@ -9,7 +9,7 @@ function Home() {
         const arrowParent = e.target.parentElement.parentElement; // Selecting main parent of arrow
         arrowParent.classList.toggle("showMenu");
       });
-    });
+    }); 
 
     const sidebar = document.querySelector(".sidebar");
     const sidebarBtn = document.querySelector(".bx-menu");
@@ -147,7 +147,7 @@ function Home() {
               <option value="Private">Private</option>
               <option value="ICU">ICU</option>
             </select>
-
+            
             <button type="submit">Submit</button>
           </form>
         </div>
