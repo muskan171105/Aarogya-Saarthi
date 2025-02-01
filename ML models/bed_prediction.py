@@ -61,10 +61,12 @@ print('Number of Beds required for next 3 months are:',int(prediction[0][3])-500
 
 # Data array
 data = [500, 503, 504, 501, 522, 523, 518, 530, 532]
-
-# Plotting the graph
+months = ['Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Next 3 Months']
 plt.figure(figsize=(10, 5))
 plt.plot(data, marker='o', linestyle='-', color='blue')
+
+# Add month names on the x-axis
+plt.xticks(ticks=range(len(months)), labels=months)
 plt.title("Bed Count Plot")
 plt.xlabel("Months")
 plt.ylabel("Beds")
