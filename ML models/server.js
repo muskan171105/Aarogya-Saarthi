@@ -32,7 +32,7 @@ const InputData = mongoose.model('aarogya_saarthi', dataSchema, 'aarogya saarthi
 // Fetch latest data from MongoDB
 app.get('/fetch-latest-input', async (req, res) => {
     try {
-        const latestInput = await InputData.findOne().sort({ timestamp: -1 }); // Get latest record
+        const latestInput = await InputData.findOne().sort({ timestamp: -1 });
 
         if (!latestInput) {
             return res.status(404).json({ error: 'No input data found' });
@@ -48,11 +48,12 @@ app.get('/fetch-latest-input', async (req, res) => {
             ]
         });
     } catch (error) {
+        console.error("Error fetching latest input data:", error);
         res.status(500).json({ error: 'Error fetching latest input data' });
     }
 });
 
-// Send latest data to Flask for prediction
+// Send latest data to Flask for bed prediction
 app.post('/predict-beds', async (req, res) => {
     try {
         const latestInput = await InputData.findOne().sort({ timestamp: -1 });
@@ -76,7 +77,37 @@ app.post('/predict-beds', async (req, res) => {
 
         res.json(response.data);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching prediction' });
+        console.error("Error fetching bed prediction:", error);
+        res.status(500).json({ error: 'Error fetching bed prediction' });
+    }
+});
+
+// ✅ New Route: Send latest data to Flask for ventilator prediction
+app.get('/predict-ventilators', async (req, res) => {
+    try {
+        const latestInput = await InputData.findOne().sort({ timestamp: -1 });
+
+        if (!latestInput) {
+            return res.status(404).json({ error: 'No input data found' });
+        }
+
+        const formattedInput = {
+            input_data: [
+                latestInput.October,
+                latestInput.November,
+                latestInput.December,
+                latestInput.January,
+                latestInput.February
+            ]
+        };
+
+        // Send data to Flask for ventilator prediction
+        const response = await axios.get('http://127.0.0.1:5000/predict-ventilators', { params: formattedInput });
+
+        res.json(response.data);
+    } catch (error) {
+        console.error("Error fetching ventilator prediction:", error);
+        res.status(500).json({ error: 'Error fetching ventilator prediction' });
     }
 });
 
