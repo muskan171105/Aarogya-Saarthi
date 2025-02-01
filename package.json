@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/muskan171105/JHU_TechLions/issues"
   },
-  "homepage": "https://github.com/muskan171105/JHU_TechLions#readme"
+  "homepage": "https://github.com/muskan171105/JHU_TechLions#readme",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.6"
+  }
 }
