@@ -1,60 +1,74 @@
+import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+import os
+import random
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+from sklearn.model_selection import train_test_split
+import tensorflow as tf
 
-file_path = '/content/Ventilator model.csv'
-data = pd.read_csv(file_path)
+# Load dataset
+dataset = pd.read_csv('/content/Book1.csv')
 
-# Rename columns as needed (adjust based on dataset structure)
-data.columns = ['Patients_in_ICU', 'Doctors_Available','Ventilators_Available']  #
 
-# Features and target
-X = data[['Patients_in_ICU', 'Doctors_Available']]
-y = data['Ventilators_Available']
+# Define features and target
+X = dataset[['Oct', 'Nov', 'Dec', 'Jan','Feb']]
+y = dataset[['Mar','Apr','May','Combined']]
 
-# Split data into training and testing sets
+# Split the data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Build and train the model
-pipeline = Pipeline([
-    ("scaler", StandardScaler()),  # Scaling the features
-    ("model", RandomForestRegressor(n_estimators=100, random_state=42))
-])
-pipeline.fit(X_train, y_train)
+# Initialize and train the model
+model = LinearRegression()
+model.fit(X_train, y_train)
 
-# Evaluate the model
-y_train_pred = pipeline.predict(X_train)
-y_test_pred = pipeline.predict(X_test)
+# Make predictions
+train_predictions = model.predict(X_train)
+test_predictions = model.predict(X_test)
 
-train_mse = mean_squared_error(y_train, y_train_pred)
-train_r2 = r2_score(y_train, y_train_pred)
-test_mse = mean_squared_error(y_test, y_test_pred)
-test_r2 = r2_score(y_test, y_test_pred)
+# Calculate evaluation metrics
+#train_mse = mean_squared_error(y_train, train_predictions)
+#test_mse = mean_squared_error(y_test, test_predictions)
+#train_r2 = r2_score(y_train, train_predictions)
+#test_r2 = r2_score(y_test, test_predictions)
 
-# Print the evaluation results
-#print("\nModel Performance:")
+#Print evaluation metrics
 #print(f"Training MSE: {train_mse}")
-#print(f"Training R² Score: {train_r2}")
 #print(f"Testing MSE: {test_mse}")
-#print(f"Testing R² Score: {test_r2}")
-
-D = int(input("Enter the number of patients in ICU: "))
-if(D<100):
-  print ("The number of ventilators available are", 100-D)
-else:
-  print(D-100, "ventilators are needed") 
+#print(f"Training R2 Score: {train_r2}")
+#print(f"Testing R2 Score: {test_r2}")
 
 
-# 3. Feature Relationships with Target Variable
-plt.figure(figsize=(8, 6))
-sns.scatterplot(data=data, x='Patients_in_ICU', y='Ventilators_Available', color='blue', label='Patients in ICU')
-plt.title('Patients in ICU vs Ventilators Available')
-plt.xlabel('Patients in ICU')
-plt.ylabel('Ventilators Availablity')
-plt.legend()
+# Training data
+#plt.subplot(1, 2, 1)
+#plt.scatter(y_train, train_predictions, alpha=0.7, color='blue')
+#plt.title('Predicted Bed Counts')
+#plt.xlabel('Number of Patients')
+#plt.ylabel('Beds Available')
+#plt.plot([y_train.min(), y_train.max()], [y_train.min(), y_train.max()], 'k--', color='red')
+input_data=([100,108,105,102,110])
+input_data_as_numpy_array=np.asarray(input_data)
+input_data_reshaped=input_data_as_numpy_array.reshape(1,-1)
+prediction=model.predict(input_data_reshaped)
+print('Number of Ventilators required in March are:',int(prediction[0][0])-100)
+print('Number of Ventilators required in April are:',int(prediction[0][1])-100)
+print('Number of Ventilators required in May are:',int(prediction[0][2])-100)
+print('Number of Ventilators required for next 3 months are:',int(prediction[0][3])-100)
+
+
+
+# Data array
+data = [100,108,105,102,110,112,106,113,114]
+months = ['Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Next 3 Months']
+plt.figure(figsize=(10, 5))
+plt.plot(data, marker='o', linestyle='-', color='blue')
+
+# Add month names on the x-axis
+plt.xticks(ticks=range(len(months)), labels=months)
+plt.title("Ventilator Count Plot")
+plt.xlabel("Months")
+plt.ylabel("Ventilator Count")
+plt.grid(True)
 plt.show()
