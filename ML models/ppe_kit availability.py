@@ -29,14 +29,12 @@ model.fit(X_train,y_train)
 
 training_data_prediction=model.predict(X_train)
 training_data_accuacy=r2_score(y_train,training_data_prediction)
-print('Accuracy on training data:',training_data_accuacy)
+# print('Accuracy on training data:',training_data_accuacy)
 
 testing_data_prediction=model.predict(X_test)
 testing_data_accuacy=r2_score(y_test,testing_data_prediction)
-print('Accuracy on testing data:',testing_data_accuacy)
-
+# print('Accuracy on testing data:',testing_data_accuacy)
 #Backend code added here 
-
 input_data=([250,250,110])
 input_data_as_numpy_array=np.asarray(input_data)
 input_data_reshaped=input_data_as_numpy_array.reshape(1,-1)
