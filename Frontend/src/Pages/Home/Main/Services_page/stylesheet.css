@@ -1,0 +1,244 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family:'Times New Roman', Times, serif;
+    
+    }
+    
+.background-image{
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(rgba(75, 73, 73, 0.8),rgba(255, 255, 255, 0.2));
+    font-family: 'Times New Roman', Times, serif;
+}
+
+nav{
+    width: 100%;
+    height: 100px;
+    background: transparent;
+    color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: spacearound;
+    align-items: center;
+}
+
+.logo img {
+    margin-top: 14px;
+    margin-left: 120px;
+    width: 100px;
+    margin-right: 170px;
+    height: 100px;
+    object-fit: contain;
+    max-width: 100%;
+    filter: drop-shadow(0 0 40px rgb(211, 80, 57)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.7));
+}
+
+.nav-menu{
+    width: 38%;
+    height: 40%;
+    padding-left:28px ;
+    padding-top: 9px;
+    background-color: rgba(238, 229, 229, 0.397);
+    box-shadow: 0 0 25px 5px #0000003b;
+    border-radius: 10px;
+    margin-inline-end: 170px;
+    margin-left: 14px;
+}
+
+.menu a{
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    padding: 10px 20px;
+    font-size: 20px;
+    position: relative;
+}
+
+.menu a:before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%; 
+    border-bottom: 2px solid rgb(235, 71, 71);
+    transition: 0.4s linear;
+}
+
+.menu a:hover:before{
+    width:90% ;
+}
+
+
+.register a{
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    padding: 10px 20px;
+    font-size: 20px;
+    background-color: indianred;
+    transition: 0.4s linear;
+    border-radius: 15px;
+    margin-left: 0px;
+}
+
+.register a:hover{
+    background: transparent;
+    border: 1px solid indianred;
+}
+
+.Heart{
+    height: 100px;
+    color: rgb(255, 255, 255);
+    margin-top: 0px;
+    margin-left: 50px;
+    text-align: center;
+    font-size: 35px;
+}
+
+.redbox {
+    height: 157%;
+    width: 96%;
+    border: 2px solid rgb(211, 80, 57) ;
+    margin-left: 2%;
+    margin-right: 2%;
+    border-radius: 30px;
+    margin-bottom: 20px;
+}
+
+.functioning{
+    display: flex;
+    border: dotted 2px rgb(211, 80, 57);
+    border-radius: 10px;
+    margin-top: 40px;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-bottom: 30px;
+}
+
+#Heart1{
+    height: 250px;
+    width: 430px;
+    margin: 20px;
+    margin-left: 55px;
+    padding-right: 29px;
+    border-right: dotted 2px rgb(211, 80, 57);
+    border-radius: 20px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.problems{
+    display: flex;
+    border: dotted 2px rgb(211, 80, 57);
+    border-radius: 10px;
+    margin-top: 40px;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-bottom: 30px;
+}
+
+#Heart2{
+    height: 250px;
+    width: 350px;
+    margin: 20px;
+    padding-right: 10px;
+    border-right: dotted 2px rgb(211, 80, 57);
+    border-radius: 20px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.precautions{
+    display: flex;
+    border: dotted 2px rgb(211, 80, 57);
+    border-radius: 10px;
+    margin-top: 40px;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-bottom: 30px;
+}
+
+#Heart3{
+    height: 250px;
+    width: 350px;
+    margin: 20px;
+    padding-right: 10px;
+    border-right: dotted 2px rgb(211, 80, 57);
+    border-radius: 20px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.Heart_s{
+    text-align: center;
+    color:rgb(211, 80, 57) ;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-size: 40px;
+}
+
+.Heartss{
+    text-align:left;
+    font-size: 20px;
+}
+
+.footer {
+    text-align: center;
+    padding: 15px;
+    background-color: indianred;
+    color: white;
+    margin-top: 60px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.service-card {
+    display: flex;
+    border: 2px solid rgb(211, 80, 57);
+    border-radius: 10px;
+    margin: 40px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.service-icon {
+    height: 150px;
+    width: 150px;
+    margin-right: 20px;
+}
+
+.service-content h1 {
+    color: rgb(211, 80, 57);
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.service-content p {
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.service-content a {
+    color: indianred;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.service-content a:hover {
+    text-decoration: underline;
+}
