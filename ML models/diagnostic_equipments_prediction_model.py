@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
@@ -7,7 +9,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.preprocessing import LabelEncoder
 
 # Load the dataset
-file_path = "/content/Diagnostic Equipments dataset.csv"  # Replace with your file path
+file_path = "/content/Diagnostic Equipments.csv"  # Replace with your file path
 data = pd.read_csv(file_path)
 
 le = LabelEncoder()
@@ -82,6 +84,18 @@ elif(S=="Laboratory Analyzers"):
 elif(S=="Ultrasound Machines"):
   print("Ultrasound Machines available are 20")
 elif(S=="ESR Analyzer"):
-  print("ESR Analyzer available are 4") 
+  print("ESR Analyzer available are 4")
+elif(S=="X-Ray Machines"):
+  print("X-Ray Machines Available are 5")   
 else:
   print(S ,"is not available") 
+# Visualization for stock availability
+sns.set(style="whitegrid")
+plt.figure(figsize=(12, 8))
+sorted_data = data.sort_values(by="Number of stocks available", ascending=False)
+sns.barplot(x="Number of stocks available", y="Diagnostic equipments", data=sorted_data, palette="Blues_r")
+
+plt.title("Stock Availability of Diagnostic Equipment", fontsize=16)
+plt.xlabel("Number of Stocks Available", fontsize=14)
+plt.ylabel("Diagnostic Equipment", fontsize=14)
+plt.show()

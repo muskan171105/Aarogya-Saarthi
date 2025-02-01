@@ -1,0 +1,515 @@
+/* Google Fonts Import Link */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  overflow: hidden;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 260px;
+  background: #11101d;
+  display: flex;
+  flex-direction: column; /* Use flex to stack items vertically */
+  justify-content: flex-start; /* Push items to the top */
+  z-index: 100;
+  transition: all 0.5s ease;
+}
+
+.sidebar.close {
+  width: 78px;
+}
+
+.sidebar .logo-details {
+  height: 60px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar .logo-details .logo_name {
+  font-size: 22px;
+  color: #fff;
+  font-weight: 600;
+  transition: 0.3s ease;
+  transition-delay: 0.1s;
+}
+
+.sidebar.close .logo-details .logo_name {
+  transition-delay: 0s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar .nav-links {
+  padding: 30px 0 0 0; /* Add top padding to separate it from the logo */
+  flex-grow: 1; /* Allow the nav links to take up remaining space */
+  overflow: auto;
+}
+
+.sidebar.close .nav-links {
+  overflow: visible;
+}
+
+.sidebar .nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar .nav-links li {
+  position: relative;
+  list-style: none;
+  transition: all 0.4s ease;
+}
+
+.sidebar .nav-links li:hover {
+  background: #1d1b31;
+}
+
+.sidebar .nav-links li .iocn-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar.close .nav-links li .iocn-link {
+  display: block;
+}
+
+.sidebar .nav-links li i {
+  height: 50px;
+  min-width: 78px;
+  text-align: center;
+  line-height: 50px;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav-links li.showMenu i.arrow {
+  transform: rotate(-180deg);
+}
+
+.sidebar.close .nav-links i.arrow {
+  display: none;
+}
+
+.sidebar .nav-links li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.sidebar .nav-links li a .link_name {
+  font-size: 18px;
+  font-weight: 400;
+  color: #fff;
+  transition: all 0.4s ease;
+}
+
+.sidebar.close .nav-links li a .link_name {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar .nav-links li .sub-menu {
+  padding: 6px 6px 14px 80px;
+  margin-top: -10px;
+  background: #1d1b31;
+  display: none;
+}
+
+.sidebar .nav-links li.showMenu .sub-menu {
+  display: block;
+}
+
+.sidebar .nav-links li .sub-menu a {
+  color: #fff;
+  font-size: 15px;
+  padding: 5px 0;
+  white-space: nowrap;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav-links li .sub-menu a:hover {
+  opacity: 1;
+}
+
+.sidebar.close .nav-links li .sub-menu {
+  position: absolute;
+  left: 100%;
+  top: -10px;
+  margin-top: 0;
+  padding: 10px 20px;
+  border-radius: 0 6px 6px 0;
+  opacity: 0;
+  display: block;
+  pointer-events: none;
+  transition: 0s;
+}
+
+.sidebar.close .nav-links li:hover .sub-menu {
+  top: 0;
+  opacity: 1;
+  pointer-events: auto;
+  transition: all 0.4s ease;
+}
+
+.sidebar.close .nav-links li .sub-menu .link_name {
+  display: none;
+}
+
+.sidebar.close .nav-links li .sub-menu .link_name {
+  font-size: 18px;
+  opacity: 1;
+  display: block;
+}
+
+/* Logout Styling */
+.sidebar .logout {
+  margin-top: auto;  /* Ensures logout stays at the bottom */
+  padding: 10px 0;   /* Adjust padding for alignment */
+}
+
+.sidebar .logout a {
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align icon and text on the left */
+  padding: 10px 20px; /* Add some padding to align similarly to other items */
+}
+
+.sidebar .logout i {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.sidebar .logout .link_name {
+  transition: all 0.3s ease;
+  font-size: 18px; /* Adjust font size to match the other items */
+}
+
+.sidebar.close .logout .link_name {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.home-section {
+  position: relative;
+  background: #E4E9F7;
+  height: 100vh;
+  left: 260px;
+  width: calc(100% - 260px);
+  transition: all 0.5s ease;
+  padding: 12px;
+}
+
+.sidebar.close ~ .home-section {
+  left: 78px;
+  width: calc(100% - 78px);
+}
+
+.home-content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.home-section .home-content .bx-menu,
+.home-section .home-content .text {
+  color: #11101d;
+  font-size: 35px;
+}
+
+.home-section .home-content .bx-menu {
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.home-section .home-content .text {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+/* Logo Styling */
+.sidebar .logo-details {
+  height: 60px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Text and Logo Display Logic */
+.sidebar .logo-details .logo_name {
+  font-size: 22px;
+  color: #fff;
+  font-weight: 600;
+  transition: 0.3s ease;
+  transition-delay: 0.1s;
+}
+
+/* Logo Image Styling */
+.sidebar .logo-details .logo-img {
+  width: 60px; /* Adjust size of the logo */
+  height: auto;
+  transition: 0.3s ease;
+}
+
+/* When Sidebar is Open */
+.sidebar.open .logo-details .logo_name {
+  display: block; /* Show the text */
+}
+
+.sidebar.open .logo-details .logo-img {
+  display: none; /* Hide the logo image */
+}
+
+/* When Sidebar is Closed */
+.sidebar.close .logo-details .logo_name {
+  display: none; /* Hide the text */
+}
+
+.sidebar.close .logo-details .logo-img {
+  display: block; /* Show the logo image */
+}
+
+.welcome-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.welcome-message h1 {
+  font-size: 100px; /* Larger font size for the entire message */
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  display: inline-block;
+  background: linear-gradient(45deg, #00aaff, #ff00aa);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding: 10px;
+  line-height: 1.2;
+}
+
+.welcome-message h1 span {
+  display: block; /* Make 'Welcome to' and 'Aarogya Saarthi' on separate lines */
+  font-size: 90px; /* Adjusted font size for each line */
+}
+
+.welcome-message h1 .highlight {
+  font-size: 80px; /* Larger font size for "Aarogya Saarthi" */
+}
+
+/* Centered Dropdown Input */
+.dropdown-container {
+  position: absolute;
+  top: 50px;  /* Adjust this value to move it closer/further from the top */
+  left: 50%;
+  transform: translateX(-50%);  /* Center it horizontally */
+  z-index: 20;
+}
+
+.dropdown {
+  font-size: 16px;
+  padding: 10px 15px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  width: 200px;
+}
+
+.dropdown:hover {
+  border-color: #11101d;
+}
+
+/* Dropdown arrow style */
+.dropdown::after {
+  content: ' ▼';
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+
+.sidebar.close ~ .home-section {
+  left: 78px;
+  width: calc(100% - 78px);
+}
+
+/* Centered Dropdown Input */
+.dropdown-container {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+}
+
+.dropdown {
+  font-size: 16px;
+  padding: 10px 15px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown:hover {
+  border-color: #11101d;
+}
+
+/* Dropdown arrow style */
+.dropdown::after {
+  content: ' ▼';
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+/* Input field and button under the dropdown */
+.input-container {
+  margin-top: 10px; /* Adjust this to space out the input field and button */
+  display: none;
+}
+
+.input-container input {
+  padding: 10px;
+  width: 300px;
+  margin-right: 10px;
+}
+
+.input-container button {
+  padding: 10px;
+  background-color: #11101d;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.input-container button:hover {
+  background-color: #00aaff;
+}
+#dropdown{
+  width: 300px;
+}
+
+/* Add Container Styling */
+.add-container {
+  margin-top: 20px; /* Add some space from other elements */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+/* Input Field Styling */
+.input-field {
+  width: 80%; /* Adjust width to suit your design */
+  padding: 10px;
+  margin-bottom: 10px; /* Space between the input and button */
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.input-field:focus {
+  border-color: #00aaff; /* Change border color on focus */
+  box-shadow: 0px 2px 5px rgba(0, 170, 255, 0.5);
+}
+
+/* Add Button Styling */
+.add-btn {
+  width: 300px;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #00aaff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-btn:hover {
+  background-color: #ff00aa; /* Change color on hover */
+}
+
+
+/* Add styling for input field and add button */
+.input-field {
+  padding: 10px;
+  margin-top: 15px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  width: 200px;
+  display: block;
+  margin-bottom: 10px; /* Adds space below the input field */
+}
+
+.add-btn {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #4CAF50; /* Green background */
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  width: 100px;
+  text-align: center;
+  margin-top: 10px;
+  border-radius: 5px;
+  width: 300px;
+}
+
+.add-btn:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.dropdown-container {
+  position: absolute;
+  top: 50px; /* Adjust top position */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  text-align: center; /* Ensure center alignment of the content */
+}
+
+.dropdown {
+  font-size: 16px;
+  padding: 10px 15px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  width: 200px;
+  margin-bottom: 10px; /* Space between dropdown and input field */
+}
+
+.input-container,
+.add-btn {
+  display: none; /* Hidden by default */
+}
