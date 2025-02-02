@@ -39,6 +39,18 @@ const ventilatorSchema = new mongoose.Schema({
 });
 const VentilatorData = mongoose.model('VentilatorData', ventilatorSchema, 'ventilator_collection'); // ✅ Collection: ventilator_collection
 
+const ppeSchema = new mongoose.Schema({
+    no_of_staff: Number, // Number of staff
+    Avg_Monthly_PPE_Consumption: Number, // Average monthly PPE consumption
+    ECLW: Number, // Estimated Consumption Last Week (or whatever ECLW stands for)
+    PPE_Kits_Available_in_october: Number, // PPE kits available in October
+    PPE_Kits_Available_in_November: Number, // PPE kits available in November
+    PPE_Kits_Available_in_December: Number, // PPE kits available in December
+    PPEKAIJ: Number, // Target column (e.g., PPE Kits Available in January, February, March)
+    timestamp: { type: Date, default: Date.now } // Timestamp for when the data was recorded
+});
+const PPEData = mongoose.model('PPEData', ppeSchema, 'ppe_collection'); // Collection: ppe_collection
+
 // ✅ Fetch latest bed data from MongoDB
 app.get('/fetch-latest-beds', async (req, res) => {
     try {
@@ -87,6 +99,29 @@ app.get('/fetch-latest-ventilators', async (req, res) => {
     }
 });
 
+// ✅ Fetch latest PPE data from MongoDB
+app.get('/fetch-latest-ppe', async (req, res) => {
+    try {
+        const latestPPEData = await PPEData.findOne().sort({ timestamp: -1 });
+
+        if (!latestPPEData) {
+            return res.status(404).json({ error: 'No PPE data found' });
+        }
+
+        res.json({
+            input_data: [
+                latestPPEData.no_of_staff,
+                latestPPEData.Avg_Monthly_PPE_Consumption,
+                latestPPEData.ECLW
+            ]
+        });
+    } catch (error) {
+        console.error("Error fetching latest PPE data:", error);
+        res.status(500).json({ error: 'Error fetching latest PPE data' });
+    }
+});
+
+// ✅ Predict beds using Flask API
 app.post('/predict-beds', async (req, res) => {
     try {
         const latestBedData = await BedData.findOne().sort({ timestamp: -1 });
@@ -120,6 +155,7 @@ app.post('/predict-beds', async (req, res) => {
     }
 });
 
+// ✅ Predict ventilators using Flask API
 app.post('/predict-ventilators', async (req, res) => {
     try {
         const latestVentilatorData = await VentilatorData.findOne().sort({ timestamp: -1 });
@@ -130,11 +166,11 @@ app.post('/predict-ventilators', async (req, res) => {
 
         const formattedInput = {
             input_data: [
-                latestVentilatorData.October,
-                latestVentilatorData.November,
-                latestVentilatorData.December,
-                latestVentilatorData.January,
-                latestVentilatorData.February
+                latestVentilatorData.Oct,
+                latestVentilatorData.Nov,
+                latestVentilatorData.Dec,
+                latestVentilatorData.Jan,
+                latestVentilatorData.Feb
             ]
         };
 
@@ -153,6 +189,37 @@ app.post('/predict-ventilators', async (req, res) => {
     }
 });
 
+// ✅ Predict PPE using Flask API
+app.post('/predict-ppe', async (req, res) => {
+    try {
+        const latestPPEData = await PPEData.findOne().sort({ timestamp: -1 });
+
+        if (!latestPPEData) {
+            return res.status(404).json({ error: 'No PPE data found' });
+        }
+
+        const formattedInput = {
+            input_data: [
+                latestPPEData.no_of_staff,
+                latestPPEData.Avg_Monthly_PPE_Consumption,
+                latestPPEData.ECLW
+            ]
+        };
+
+        console.log("📤 Sending PPE data to Flask:", formattedInput); // Debugging log
+
+        const response = await axios.post(
+            'http://127.0.0.1:5000/predict-ppe', 
+            formattedInput, 
+            { headers: { 'Content-Type': 'application/json' } }
+        );
+
+        res.json(response.data);
+    } catch (error) {
+        console.error("🚨 Error fetching PPE prediction:", error.response ? error.response.data : error.message);
+        res.status(500).json({ error: 'Error fetching PPE prediction' });
+    }
+}); 
 
 // ✅ Start Node.js server
 app.listen(3000, () => {
