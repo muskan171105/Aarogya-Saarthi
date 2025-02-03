@@ -28,7 +28,7 @@ function Home() {
           <img className="logo-img" src="../src/assets/logo.png" alt="Logo" />
           <span className="logo_name">Aarogya Saarthi</span>
         </div>
-        
+
         <ul className="nav-links">
           <li>
             <a href="../Dashboard/Dashboard.jsx">
@@ -45,8 +45,8 @@ function Home() {
               <i className='bx bxs-chevron-down arrow'></i>
             </div>
             <ul className="sub-menu">
-            <li><a href="../Staff/Staff.jsx">Display Staff</a></li>
-            <li><a href="../Add staff/Add_staff.jsx">Add new</a></li>
+              <li><a href="../Staff/Staff.jsx">Display Staff</a></li>
+              <li><a href="../Add staff/Add_staff.jsx">Add new</a></li>
             </ul>
           </li>
           <li>
@@ -58,7 +58,7 @@ function Home() {
               <i className='bx bxs-chevron-down arrow'></i>
             </div>
             <ul className="sub-menu">
-            <li><a href="../Add patients/Add_patients.jsx">Add new</a></li>
+              <li><a href="../Add patients/Add_patients.jsx">Add new</a></li>
               <li><a href="../Current patients/current_patients.jsx">Current Patient</a></li>
               <li><a href="../Past patients/Past_patients.jsx">Past Patient</a></li>
             </ul>
@@ -72,13 +72,13 @@ function Home() {
               <i className='bx bxs-chevron-down arrow'></i>
             </div>
             <ul className="sub-menu">
-            <li><a href="../Currently available/currently_available.jsx">Currently available</a></li>
+              <li><a href="../Currently available/currently_available.jsx">Currently available</a></li>
               <li><a href="../Add resources/Add_resources.jsx">Add Resources</a></li>
               <li><a href="../Prediction/Prediction.jsx">Prediction</a></li>
             </ul>
           </li>
           <li>
-          <a href="../Workload/Workload.jsx">
+            <a href="../Workload/Workload.jsx">
               <i className='bx bxs-briefcase'></i>
               <span className="link_name">Workload</span>
             </a>
@@ -95,6 +95,78 @@ function Home() {
       <section className="home-section">
         <div className="home-content">
           <i className='bx bx-menu'></i>
+        </div>
+
+        {/* Patient Table */}
+        <div className="table-container">
+          <h2>Patient Records</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Blood Type</th>
+                <th>Medical Condition</th>
+                <th>Date of Admission</th>
+                <th>Doctor</th>
+                <th>Insurance Provider</th>
+                <th>Room Number</th>
+                <th>Admission Type</th>
+                <th>Medication</th>
+                <th>Test Results</th>
+                <th>Room Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
     </div>
