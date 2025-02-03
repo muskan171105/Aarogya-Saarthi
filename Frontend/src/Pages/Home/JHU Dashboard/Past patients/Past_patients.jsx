@@ -1,4 +1,4 @@
-import "./style.css";
+import "./style.css"; 
 import { useEffect } from "react";
 
 function Home() {
@@ -20,6 +20,41 @@ function Home() {
       });
     }
   }, []);
+
+  const patientRecords = [
+    {
+      id: "P001",
+      name: "John Doe",
+      age: 30,
+      gender: "Male",
+      bloodType: "A+",
+      medicalCondition: "Diabetes",
+      admissionDate: "2024-01-15",
+      doctor: "Dr. Smith",
+      insuranceProvider: "HealthCare Inc.",
+      roomNumber: 101,
+      admissionType: "Emergency",
+      medication: "Insulin",
+      testResults: "Normal",
+      roomType: "Single"
+    },
+    {
+      id: "P002",
+      name: "Jane Smith",
+      age: 25,
+      gender: "Female",
+      bloodType: "O-",
+      medicalCondition: "Hypertension",
+      admissionDate: "2024-02-05",
+      doctor: "Dr. Adams",
+      insuranceProvider: "MediCare",
+      roomNumber: 202,
+      admissionType: "Routine",
+      medication: "Beta-blockers",
+      testResults: "Elevated",
+      roomType: "Double"
+    }
+  ];
 
   return (
     <div className="Home">
@@ -120,51 +155,24 @@ function Home() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
+              {patientRecords.map((patient) => (
+                <tr key={patient.id}>
+                  <td>{patient.id}</td>
+                  <td>{patient.name}</td>
+                  <td>{patient.age}</td>
+                  <td>{patient.gender}</td>
+                  <td>{patient.bloodType}</td>
+                  <td>{patient.medicalCondition}</td>
+                  <td>{patient.admissionDate}</td>
+                  <td>{patient.doctor}</td>
+                  <td>{patient.insuranceProvider}</td>
+                  <td>{patient.roomNumber}</td>
+                  <td>{patient.admissionType}</td>
+                  <td>{patient.medication}</td>
+                  <td>{patient.testResults}</td>
+                  <td>{patient.roomType}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

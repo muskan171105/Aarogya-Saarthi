@@ -21,6 +21,29 @@ function Home() {
     }
   }, []);
 
+  const employeeData = [
+    {
+      id: "EMP001",
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      gender: "Male",
+      age: 30,
+      dateOfEmployment: "2020-01-15",
+      phoneNumber: "123-456-7890"
+    },
+    {
+      id: "EMP002",
+      firstName: "Jane",
+      lastName: "Smith",
+      email: "jane.smith@example.com",
+      gender: "Female",
+      age: 28,
+      dateOfEmployment: "2019-03-22",
+      phoneNumber: "987-654-3210"
+    }
+  ];
+
   return (
     <div className="Home">
       <div className="sidebar close">
@@ -97,7 +120,7 @@ function Home() {
           <i className='bx bx-menu'></i>
         </div>
 
-        {/* Patient Table */}
+        {/* Employee Table */}
         <div className="table-container">
           <h2>Employee Records</h2>
           <table>
@@ -114,36 +137,18 @@ function Home() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
+              {employeeData.map((employee) => (
+                <tr key={employee.id}>
+                  <td>{employee.id}</td>
+                  <td>{employee.firstName}</td>
+                  <td>{employee.lastName}</td>
+                  <td>{employee.email}</td>
+                  <td>{employee.gender}</td>
+                  <td>{employee.age}</td>
+                  <td>{employee.dateOfEmployment}</td>
+                  <td>{employee.phoneNumber}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
