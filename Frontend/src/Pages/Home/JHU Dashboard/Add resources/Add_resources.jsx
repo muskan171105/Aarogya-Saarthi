@@ -1,121 +1,72 @@
-import "./style.css";
-import { useEffect } from "react";
 
-function Home() {
-  useEffect(() => {
-    let arrows = document.querySelectorAll(".arrow");
-    arrows.forEach((arrow) => {
-      arrow.addEventListener("click", (e) => {
-        let arrowParent = e.target.parentElement.parentElement;
-        arrowParent.classList.toggle("showMenu");
-      });
-    });
+import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import SideBar from "../../SideBar";
+import "../../style.css";
 
-    let sidebar = document.querySelector(".sidebar");
-    let sidebarBtn = document.querySelector(".bx-menu");
-    if (sidebarBtn) {
-      sidebarBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("close");
-      });
+function Add_resources() {
+
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  const token = localStorage.getItem('userId');
+
+
+  const [formData, setFormData] = useState({
+    resources: "",
+    quantity:"",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+
+  const HandleClick = async (e) => {
+    e.preventDefault();
+    console.log(formData);
+    try {
+      const response = await axios.post('http://localhost:3000/add_resources', formData, {headers: {
+        'Authorization': `Bearer ${token}`,
+      },});
+      if (response.status == 200 ) {
+          navigate('/dashboard');
+      }
+  } catch (error) {
+    console.error('Error in Sign Up:', error);
+  
+    if (error.response) { 
+      const statusCode = error.response.status;
+  
+      if (statusCode === 403) {
+        alert("Session expired. Please log in again.");
+        localStorage.removeItem('token'); 
+        window.location.href = '/'; 
+        return; 
+      }
+  
+      if (statusCode === 400) {
+        setError("Employee ID is already registered");
+        return; 
+      }
+  
+      setError(error.response.data); 
+    } else {
+      setError("An unexpected error occurred. Please try again.");
     }
-
-    let dropdown = document.getElementById("dropdown");
-    let inputContainer = document.getElementById("input-container");
-    let addButton = document.getElementById("add-btn");
-
-    if (dropdown) {
-      dropdown.addEventListener("change", function () {
-        var selectedOption = this.value;
-        if (selectedOption !== "option1") {
-          inputContainer.innerHTML = `
-            <input type="text" placeholder="Enter value for ${selectedOption}" />
-            <button>Add</button>
-          `;
-          inputContainer.style.display = "block";
-          addButton.style.display = "inline-block";
-        } else {
-          inputContainer.style.display = "none";
-          addButton.style.display = "none";
-        }
-      });
-    }
-  }, []);
+  }
+}
 
   return (
     <>
-      <div className="sidebar close">
-        <div className="logo-details">
-          <img className="logo-img" src="../src/assets/logo.png" alt="Logo" />
-          <span className="logo_name">Aarogya Saarthi</span>
-        </div>
-        
-        <ul className="nav-links">
-          <li>
-            <a href="../Dashboard/Dashboard.jsx">
-              <i className='bx bx-grid-alt'></i>
-              <span className="link_name">Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <div className="iocn-link">
-              <a href="#" className="dropdown-toggle">
-                <i className='bx bxs-group'></i>
-                <span className="link_name">Staff</span>
-              </a>
-              <i className='bx bxs-chevron-down arrow'></i>
-            </div>
-            <ul className="sub-menu">
-            <li><a href="../Staff/Staff.jsx">Display Staff</a></li>
-            <li><a href="../Add staff/Add_staff.jsx">Add new</a></li>
-            </ul>
-          </li>
-          <li>
-            <div className="iocn-link">
-              <a href="#" className="dropdown-toggle">
-                <i className='bx bxs-face-mask'></i>
-                <span className="link_name">Patient</span>
-              </a>
-              <i className='bx bxs-chevron-down arrow'></i>
-            </div>
-            <ul className="sub-menu">
-              <li><a href="../Add patients/Add_patients.jsx">Add new</a></li>
-              <li><a href="../Current patients/current_patients.jsx">Current Patient</a></li>
-              <li><a href="../Past patients/Past_patients.jsx">Past Patient</a></li>
-            </ul>
-          </li>
-          <li>
-            <div className="iocn-link">
-              <a href="#" className="dropdown-toggle">
-                <i className='bx bx-store'></i>
-                <span className="link_name">Resources</span>
-              </a>
-              <i className='bx bxs-chevron-down arrow'></i>
-            </div>
-            <ul className="sub-menu">
-              <li><a href="../Currently available/currently_available.jsx">Currently available</a></li>
-              <li><a href="../Add resources/Add_resources.jsx">Add Resources</a></li>
-              <li><a href="../Prediction/Prediction.jsx">Prediction</a></li>
-            </ul>
-          </li>
-          <li>
-            <a href="../Workload/Workload.jsx">
-              <i className='bx bxs-briefcase'></i>
-              <span className="link_name">Workload</span>
-            </a>
-          </li>
-        </ul>
-        
-        <div className="logout">
-          <a href="#">
-            <i className='bx bx-log-out'></i>
-            <span className="link_name">Logout</span>
-          </a>
-        </div>
-      </div>
-
+      <SideBar />
       <section className="home-section">
         <div className="dropdown-container">
-          <select className="dropdown" id="dropdown">
+          <select className="dropdown" id="dropdown" name="resources" required value={formData.resources} onChange={handleChange}>
             <option value="option1">Select option</option>
             <option value="ECG Machine">ECG Machine</option>
             <option value="Pulse Oximeter">Pulse Oximeter</option>
@@ -151,12 +102,13 @@ function Home() {
             <option value="Suction">Suction</option>
             <option value="Hemostats">Hemostats</option>
           </select>
-          <div className="input-container" id="input-container" style={{ display: "none" }}></div>
-          <button className="add-btn" id="add-btn" style={{ display: "none" }}>Add</button>
+          <input className="input-container" id="input-container" style={{ display: "none" }} required value={formData.quantity} onChange={handleChange} name="quantity"/>
+          <button className="add-btn" id="add-btn" style={{ display: "none" }} onClick={HandleClick}>Add</button>
+          {error && <p style={{ color: 'red', marginTop: 10 }}>{error}</p>}
         </div>
       </section>
     </>
   );
 }
 
-export default Home;
+export default Add_resources;
