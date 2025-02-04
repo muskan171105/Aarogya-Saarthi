@@ -12,28 +12,27 @@ app = Flask(__name__)
 MONGO_URI = "mongodb://localhost:27017/"  # Change this to your actual MongoDB connection string
 client = MongoClient(MONGO_URI)
 db = client["hospitalDB"]  # Replace with your actual database name
-bed_collection = db["bed_collection"]  # Replace with your collection name
+bed_collection = db["bed_collection"]
 ventilator_collection = db["ventilator_collection"]
-ppe_collection = db["ppe_collection"]  # Add a new collection for PPE data
+ppe_collection = db["ppe_collection"]
+diagnostic_collection = db["diagnostic_collection"]  # ✅ Added collection for diagnostic equipment
 
-# ✅ Load the pre-trained models (Make sure you've saved them first)
+# ✅ Load the pre-trained models
 bed_model = load('bed_prediction_model.pkl')
 ventilator_model = load('ventilator_model.pkl')
-ppe_model = load('ppe_model.pkl')  # Load the PPE model
+ppe_model = load('ppe_model.pkl')
+diagnostic_model = load('diagnostic_model.pkl')  # ✅ Load diagnostic equipment model
 
-# ✅ Fetch data from MongoDB
+# ✅ Function to fetch data from MongoDB
 def fetch_data_from_mongo(collection, feature_cols, target_cols):
     try:
-        # Fetch only the required columns from MongoDB
         records = list(collection.find({}, {col: 1 for col in feature_cols + target_cols}))
         if not records:
             raise ValueError(f"No data found in {collection.name} collection.")
 
-        # Convert records to a DataFrame
         df = pd.DataFrame(records)
-        df.drop(columns=['_id'], inplace=True, errors='ignore')  # Remove MongoDB's _id field
+        df.drop(columns=['_id'], inplace=True, errors='ignore')
 
-        # Ensure all required columns are present
         missing_cols = [col for col in feature_cols + target_cols if col not in df.columns]
         if missing_cols:
             raise ValueError(f"Missing columns in {collection.name}: {missing_cols}")
@@ -58,11 +57,18 @@ if X_ventilator is None or y_ventilator is None:
     raise RuntimeError("Error loading ventilator dataset from MongoDB.")
 
 # ✅ Fetch PPE model training data
-ppe_features = ['no_of_staff', 'Avg_Monthly_PPE_Consumption', 'ECLW']  # Replace with actual feature names
-ppe_targets = ['PPEKAIJ']  # Replace with actual target names
+ppe_features = ['no_of_staff', 'Avg_Monthly_PPE_Consumption', 'ECLW']
+ppe_targets = ['PPEKAIJ']
 X_ppe, y_ppe = fetch_data_from_mongo(ppe_collection, ppe_features, ppe_targets)
 if X_ppe is None or y_ppe is None:
     raise RuntimeError("Error loading PPE dataset from MongoDB.")
+
+# ✅ Fetch diagnostic equipment model training data
+diagnostic_features = ['patients_per_day', 'Avg_Testing_Rate', 'Equipment_Lifetime']
+diagnostic_targets = ['Required_Equipment']  # Replace with actual target column name
+X_diagnostic, y_diagnostic = fetch_data_from_mongo(diagnostic_collection, diagnostic_features, diagnostic_targets)
+if X_diagnostic is None or y_diagnostic is None:
+    raise RuntimeError("Error loading diagnostic dataset from MongoDB.")
 
 # Free memory
 gc.collect()
@@ -72,15 +78,11 @@ gc.collect()
 def predict():
     try:
         data = request.get_json()
-        
         if not data or 'input_data' not in data:
             return jsonify({"error": "Invalid JSON input"}), 400
 
-        print("📥 Received bed data:", data)  # Debugging log
-
-        # Ensure input_data has the correct shape (1 sample with the same features as the model)
+        print("📥 Received bed data:", data)
         prediction = bed_model.predict([data["input_data"]])
-
         return jsonify({"predicted_beds": prediction.tolist()})
     
     except Exception as e:
@@ -91,15 +93,11 @@ def predict():
 def predict_ventilators():
     try:
         data = request.get_json()
-        
         if not data or 'input_data' not in data:
             return jsonify({"error": "Invalid JSON input"}), 400
 
-        print("📥 Received ventilator data:", data)  # Debugging log
-
-        # Ensure input_data has the correct shape (1 sample with the same features as the model)
+        print("📥 Received ventilator data:", data)
         prediction = ventilator_model.predict([data["input_data"]])
-
         return jsonify({"predicted_ventilators": prediction.tolist()})
 
     except Exception as e:
@@ -110,16 +108,27 @@ def predict_ventilators():
 def predict_ppe():
     try:
         data = request.get_json()
-        
         if not data or 'input_data' not in data:
             return jsonify({"error": "Invalid JSON input"}), 400
 
-        print("📥 Received PPE data:", data)  # Debugging log
-
-        # Ensure input_data has the correct shape (1 sample with the same features as the model)
+        print("📥 Received PPE data:", data)
         prediction = ppe_model.predict([data["input_data"]])
-
         return jsonify({"predicted_ppe": prediction.tolist()})
+
+    except Exception as e:
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+# ✅ Route for diagnostic equipment predictions
+@app.route('/predict-diagnostic', methods=['POST'])
+def predict_diagnostic():
+    try:
+        data = request.get_json()
+        if not data or 'input_data' not in data:
+            return jsonify({"error": "Invalid JSON input"}), 400
+
+        print("📥 Received diagnostic data:", data)
+        prediction = diagnostic_model.predict([data["input_data"]])
+        return jsonify({"predicted_diagnostic_equipment": prediction.tolist()})
 
     except Exception as e:
         return jsonify({"error": f"Server error: {str(e)}"}), 500
