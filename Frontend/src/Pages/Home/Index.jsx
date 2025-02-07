@@ -26,7 +26,7 @@ function Home() {
     try {
         const response = await axios.post('http://localhost:3000/login', formData);
         if (response.status == 200 || response.id) {
-            localStorage.setItem('userId', response.data.id);
+            localStorage.setItem('userId', response.data.token);
             navigate('/dashboard');
         }
     } catch (error) {
