@@ -1,7 +1,7 @@
 import "./style.css";
 import { useEffect } from "react";
 
-function Home() {
+function Staff() {
   useEffect(() => {
     const arrows = document.querySelectorAll(".arrow");
     for (let i = 0; i < arrows.length; i++) {
@@ -161,4 +161,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Staff;
