@@ -74,7 +74,11 @@ function Home() {
             <ul className="sub-menu">
             <li><a href="../Currently available/currently_available.jsx">Currently available</a></li>
               <li><a href="../Add resources/Add_resources.jsx">Add Resources</a></li>
-              <li><a href="../Prediction/Prediction.jsx">Prediction</a></li>
+              <li><a href="../Beds requirement/Beds_requirement.jsx">Beds requirement</a></li>
+              <li><a href="../Ventilator requirement/Ventilator_requirement.jsx">Ventilator requirement</a></li>
+              <li><a href="../PPE Kit requirement/PPEKit_requirement.jsx">PPE Kit requirement</a></li>
+              <li><a href="../Diagnostic Equipments/Diagnostic_Equipments.jsx">Diagnostic Equipments</a></li>
+              <li><a href="../Prediction/Prediction.jsx"> Medical Equipments</a></li>
             </ul>
           </li>
           <li>
