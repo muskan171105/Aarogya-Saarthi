@@ -10,6 +10,10 @@ import PastPatient from './Pages/Home/JHU Dashboard/Past patients/Past_patients'
 import Resources from './Pages/Home/JHU Dashboard/Currently available/currently_available';
 import Prediction from './Pages/Home/JHU Dashboard/Prediction/Prediction';
 import Workload from './Pages/Home/JHU Dashboard/Workload/Workload';
+import Ventilator from './Pages/Home/JHU Dashboard/Ventilator requirement/Ventilator_requirement';
+import PPE from './Pages/Home/JHU Dashboard/PPE Kit requirement/PPEKit_requirement';
+import Diagnostic_Equipments from './Pages/Home/JHU Dashboard/Diagnostic Equipments/Diagnostic_Equipments';
+import Beds_requirement from './Pages/Home/JHU Dashboard/Beds requirement/Beds_requirement';
 
 function App() {
   
@@ -27,6 +31,10 @@ function App() {
         <Route path="/resources" element={<Resources />} />
         <Route path="/prediction" element={<Prediction />} />
         <Route path="/workload" element={<Workload />} />
+        <Route path="/ventilator_requirements" element={<Ventilator />} />
+        <Route path="/ppe_kit_requirement" element={<PPE />} />
+        <Route path="/diagnostic_equipments" element={<Diagnostic_Equipments />} />
+        <Route path="/beds_requirement" element={<Beds_requirement />} />
         <Route path="*" element={<Navigate to="/" />} />
         
       </Routes> 

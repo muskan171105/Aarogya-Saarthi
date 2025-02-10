@@ -100,7 +100,11 @@ function SideBar(){
             <ul className="sub-menu">
               <li><Link to="/resources">Currently available</Link></li>
               <li><Link to="/add_resources">Add Resources</Link></li>
-              <li><Link to="/prediction">Prediction</Link></li>
+              <li><Link to="/beds_requirement">Beds requirement</Link></li>
+              <li><Link to="/ventilator_requirements">Ventilator requirement</Link></li>
+              <li><Link to="/ppe_kit_requirement">PPE Kit requirement</Link></li>
+              <li><Link to="/diagnostic_equipments">Diagnostic Equipments</Link></li>
+              <li><Link to="/prediction"> Medical Equipments</Link></li>
             </ul>
           </li>
           <li>
