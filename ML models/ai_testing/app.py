@@ -3,10 +3,13 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 
-# Connect to MongoDB
-client = MongoClient("mongodb://localhost:27017/")
-db = client["hospitalDB"]
-collection = db["patients"]  # Assuming patient data is stored in a 'patients' collection
+# Connect to MongoDB Atlas
+MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/"
+client = MongoClient(MONGO_URI)
+
+# Select Database and Collection
+db = client["AarogyaSaarthi"]
+collection = db["PriorityScheduling"]
 
 # Define priority levels
 admission_priority = {"Emergency": 3, "Urgent": 2, "Elective": 1}
@@ -28,7 +31,7 @@ def assign_priority(patient):
 
 @app.route('/process', methods=['GET'])
 def process_data():
-    patients = list(collection.find({}, {"_id": 0}))  # Fetch data from MongoDB, exclude '_id' field
+    patients = list(collection.find({}, {"_id": 0}))  # Fetch data from MongoDB Atlas, exclude '_id' field
 
     for patient in patients:
         patient["Priority Score"] = assign_priority(patient)    

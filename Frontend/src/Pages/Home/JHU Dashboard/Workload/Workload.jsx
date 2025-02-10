@@ -9,7 +9,7 @@ function Workload() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:3000/patients")  // Fetch data from Node.js server
+    axios.get("http://127.0.0.1:3001/patients")  // Fetch data from Node.js server
       .then(response => {
         setPatients(response.data);  // Store data in state
         setLoading(false);
@@ -41,7 +41,6 @@ function Workload() {
                   <th>Admission Type</th>
                   <th>Room Number</th>
                   <th>Sepsis</th>
-                  <th>Priority Score</th>
                 </tr>
               </thead>
               <tbody>
@@ -53,7 +52,6 @@ function Workload() {
                     <td>{patient["Admission Type"]}</td>
                     <td>{patient["Room Number"]}</td>
                     <td>{patient["Sepsis"]}</td>
-                    <td>{patient["Priority Score"]}</td>
                   </tr>
                 ))}
               </tbody>
