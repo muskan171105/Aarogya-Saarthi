@@ -252,6 +252,11 @@ app.get('/past_patients', async (req, res)=>{
   }
 });
 
+app.get('/auth', authenticateToken, (req, res) => {
+  res.status(200).json({ message: 'Authenticated' });
+});
+
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

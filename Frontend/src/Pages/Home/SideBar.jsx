@@ -1,8 +1,35 @@
 import { useEffect } from "react";
 import "./style.css";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function SideBar(){
+  const navigate = useNavigate();
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        const token = localStorage.getItem("userId");
+        
+        if (!token) {
+          console.error("No token found");
+          navigate("/"); // Redirect to login page
+          return;
+        }
+  
+        const response = await axios.get("http://localhost:3000/auth", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+  
+        console.log("Verification successful:", response.data);
+      } catch (error) {
+        console.error("Error verifying user:", error);
+        navigate("/"); // Redirect to login page
+      }
+    }
+    verifyUser();
+  });
+
     useEffect(() => {
         let arrows = document.querySelectorAll(".arrow");
         arrows.forEach((arrow) => {
