@@ -158,26 +158,26 @@ app.post('/add_patient', authenticateToken, async (req, res) => {
   const createdAt = new Date();
   try {
     // Check if Patient data already feeded
-    const existingPatient = await db.collection('Patient').findOne({ pat_id });
+    const existingPatient = await db.collection('Patient').findOne({ 'Patient ID': pat_id });
 
     if (!existingPatient) {
       await db.collection('Patient').insertOne({
         userID,
-        pat_id,
-        name,
-        age,
-        blood_type,
-        gender,
-        medical_condition,
-        doa,
-        doctor,
-        insurance,
-        room_no,
-        adm_type,
-        medication,
-        test_result,
-        room_type,
-        createdAt,
+        "Patient ID": pat_id,
+          Name: name,
+          Age: age,
+          Gender: gender,
+          "Blood Type": blood_type,
+          "Medical Condition": medical_condition,
+          "Date of Admission": doa,
+          Doctor: doctor,
+          "Insurance Provider": insurance,
+          "Room Number": room_no,
+          "Admission Type": adm_type,
+          Medication: medication,
+          "Test Results": test_result,
+          "Room type": room_type,
+          createdAt: createdAt 
       });
 
       res.status(200).json({ message: 'Patient added successfully' });
@@ -223,8 +223,34 @@ app.post('/add_resources', authenticateToken, async (req, res) => {
   }
 });
 
+// ALl Current Patient
+app.get('/patients', async (req, res) => {
+  try {
+    console.log("Fetching patients...");
+    
+    // Fetch data properly
+    const existingPatients = await db.collection('Patient').find({}).toArray();
+    
+    res.json(existingPatients);
+  } catch (error) {
+    console.error('Error fetching patients:', error.message);
+    res.status(500).send('Server error');
+  }
+});
 
-
+app.get('/past_patients', async (req, res)=>{
+  try {
+    console.log("Fetching patients...");
+    
+    // Fetch data properly
+    const existingPatients = await db.collection('PastPatient').find({}).toArray();
+    
+    res.json(existingPatients);
+  } catch (error) {
+    console.error('Error fetching patients:', error.message);
+    res.status(500).send('Server error');
+  }
+});
 
 // Start the server
 app.listen(PORT, () => {

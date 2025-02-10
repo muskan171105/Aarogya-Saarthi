@@ -31,7 +31,7 @@ def process_data():
     patients = list(collection.find({}, {"_id": 0}))  # Fetch data from MongoDB, exclude '_id' field
 
     for patient in patients:
-        patient["Priority Score"] = assign_priority(patient)
+        patient["Priority Score"] = assign_priority(patient)    
 
     sorted_patients = sorted(patients, key=lambda x: x["Priority Score"], reverse=True)
 
