@@ -7,9 +7,9 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
 # Connect to MongoDB
-client = MongoClient("mongodb://localhost:27017/")  # Update if using a remote database
-db = client["hospitalDB"]
-collection = db["bed_collection"]  # Change collection name if needed
+client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")  # Update if using a remote database
+db = client["AarogyaSaarthi"]
+collection = db["Bed"]  # Change collection name if needed
 
 # Fetch data from MongoDB
 def fetch_data():

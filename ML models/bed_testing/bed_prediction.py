@@ -37,19 +37,6 @@ print('Number of Beds required in April are:',int(prediction[0][1])-500)
 print('Number of Beds required in May are:',int(prediction[0][2])-500)
 print('Number of Beds required for next 3 months are:',int(prediction[0][3])-500)
 
-
-<<<<<<< HEAD
-# Bed availability logic
-A = 450
-B = int(input("Enter the number of patients: "))
-if B > A:
-    print(B - A, "more Beds are needed")
-elif A - B == 0:
-    print("All the beds are in use")
-else:
-    print(A - B, "Beds are available")
-=======
-
 # Data array
 data = [500, 503, 504, 501, 522, 523, 518, 530, 532]
 months = ['Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Next 3 Months']
@@ -63,4 +50,3 @@ plt.xlabel("Months")
 plt.ylabel("Beds")
 plt.grid(True)
 plt.show()
->>>>>>> a84d912ab0effd8e010f953ef3e319fd4c0fc4f4

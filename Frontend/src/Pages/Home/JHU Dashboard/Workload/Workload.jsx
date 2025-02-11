@@ -38,9 +38,9 @@ function Workload() {
                   <th>Patient ID</th>
                   <th>Name</th>
                   <th>Medical Condition</th>
-                  <th>Admission Type</th>
                   <th>Room Number</th>
-                  <th>Sepsis</th>
+                  <th>Admission Type</th>
+                 
                 </tr>
               </thead>
               <tbody>
@@ -49,9 +49,8 @@ function Workload() {
                     <td>{patient["Patient ID"]}</td>
                     <td>{patient["Name"]}</td>
                     <td>{patient["Medical Condition"]}</td>
-                    <td>{patient["Admission Type"]}</td>
                     <td>{patient["Room Number"]}</td>
-                    <td>{patient["Sepsis"]}</td>
+                    <td>{patient["Admission Type"]}</td>
                   </tr>
                 ))}
               </tbody>
