@@ -1,4 +1,3 @@
-// Updated Node.js server to handle all requests and communicate with Flask API
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -20,15 +19,45 @@ app.get('/fetch-data', async (req, res) => {
         await client.connect();
         const db = client.db(DB_NAME);
         const collection = db.collection(COLLECTION_NAME);
-        
+
+        // Fetch all documents
         const data = await collection.find({}).toArray();
+
+        // Months to consider
+        const months = ["October", "November", "December", "January", "February"];
+        let monthWiseData = {};
+
+        // Initialize sum and count for each month
+        months.forEach(month => {
+            monthWiseData[month] = { sum: 0, count: 0 };
+        });
+
+        // Process each document
+        data.forEach(doc => {
+            months.forEach(month => {
+                if (doc[month] !== undefined) {  // Ensure field exists
+                    monthWiseData[month].sum += doc[month];
+                    monthWiseData[month].count += 1;
+                }
+            });
+        });
+
+        // Compute average for each month
+        let result = {};
+        months.forEach(month => {
+            if (monthWiseData[month].count > 0) {
+                result[month] = Math.round(monthWiseData[month].sum / monthWiseData[month].count);
+            }
+        });
+
         await client.close();
-        
-        res.json(data);
+        res.json(result);
     } catch (error) {
+        console.error("Error fetching data:", error);
         res.status(500).json({ error: error.message });
     }
 });
+
 
 // Train Model using Flask API via Node.js
 app.get('/train-model', async (req, res) => {
@@ -40,17 +69,18 @@ app.get('/train-model', async (req, res) => {
     }
 });
 
-// Predict bed requirements using Flask API via Node.js
-app.post('/predict-beds', async (req, res) => {
+// Predict bed requirements for March, April, May
+app.get('/predict-beds', async (req, res) => {
     try {
-        if (!req.body.features) {
-            return res.status(400).json({ error: "Missing 'features' in request body" });
-        }
+        // Fixed input months: October - February
+        const inputMonths = ["October", "November", "December", "January", "February"];
 
+        // Send request to Flask API with predefined input
         const response = await axios.post(`${FLASK_API_URL}/predict`, {
-            features: req.body.features
+            months: inputMonths  // Sending fixed months as input
         });
-        res.json(response.data);
+
+        res.json(response.data); // Expecting predictions for March, April, May
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

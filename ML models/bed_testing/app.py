@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 import numpy as np
 import pandas as pd
 import joblib
@@ -7,11 +7,11 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
 # Connect to MongoDB
-client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")  # Update if using a remote database
+client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")  
 db = client["AarogyaSaarthi"]
-collection = db["Bed"]  # Change collection name if needed
+collection = db["Bed"]
 
-# Fetch data from MongoDB
+# Fetch latest data from MongoDB
 def fetch_data():
     data = list(collection.find({}, {"_id": 0}))  # Exclude MongoDB `_id` field
     return pd.DataFrame(data)
@@ -19,6 +19,10 @@ def fetch_data():
 # Train the model
 def train_model():
     dataset = fetch_data()
+    
+    if dataset.empty:
+        raise ValueError("No data found in MongoDB collection")
+
     X = dataset[['October', 'November', 'December', 'January', 'February']]
     y = dataset[['March', 'April', 'May', 'Combined']]
     
@@ -34,35 +38,32 @@ app = Flask(__name__)
 
 @app.route('/train', methods=['GET'])
 def retrain():
-    train_model()
-    return jsonify({"message": "Model retrained with latest MongoDB data"})
+    try:
+        train_model()
+        return jsonify({"message": "Model retrained with latest MongoDB data"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Print received JSON data for debugging
-        print("Received request data:", request.json)
-
-        # Ensure 'features' key exists
-        if 'features' not in request.json:
-            return jsonify({"error": "Missing 'features' key in request body"}), 400
-
         # Load the trained model
         model = joblib.load('hospital_bed_model.pkl')
 
-        # Get input data
-        data = request.json['features']
-        input_data = np.array(data).reshape(1, -1)
+        # Fetch latest data from MongoDB to get input values
+        latest_data = fetch_data().iloc[-1]  # Get the most recent record
+
+        input_features = latest_data[['October', 'November', 'December', 'January', 'February']].values.reshape(1, -1)
 
         # Make prediction
-        prediction = model.predict(input_data)[0]
+        prediction = model.predict(input_features)[0]
 
         # Format response
         response = {
-            "March": int(prediction[0]) - 500,
-            "April": int(prediction[1]) - 500,
-            "May": int(prediction[2]) - 500,
-            "Next_3_Months": int(prediction[3]) - 500
+            "March": int(prediction[0]),
+            "April": int(prediction[1]),
+            "May": int(prediction[2]),
+            "Next_3_Months": int(prediction[3])
         }
 
         return jsonify(response)
@@ -70,7 +71,10 @@ def predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 if __name__ == '__main__':
-    train_model()  # Train model on startup
+    try:
+        train_model()  # Train model on startup
+    except Exception as e:
+        print(f"Error training model on startup: {e}")
+    
     app.run(host='0.0.0.0', port=5000, debug=True)
