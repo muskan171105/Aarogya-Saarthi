@@ -252,6 +252,19 @@ app.get('/past_patients', async (req, res)=>{
   }
 });
 
+app.get('/staff', async (req, res)=>{
+  try {
+    
+    // Fetch data properly
+    const existingPatients = await db.collection('Staff').find({}).toArray();
+    
+    res.json(existingPatients);
+  } catch (error) {
+    console.error('Error fetching patients:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
 app.get('/auth', authenticateToken, (req, res) => {
   res.status(200).json({ message: 'Authenticated' });
 });

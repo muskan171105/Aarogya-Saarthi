@@ -1,31 +1,27 @@
 import "../../style.css";
 import SideBar from "../../SideBar";
+import axios from "axios";
+import { useEffect, useState } from "react";  
 
 function Staff() {
 
 
-  const employeeData = [
-    {
-      id: "EMP001",
-      firstName: "John",
-      lastName: "Doe",
-      email: "john.doe@example.com",
-      gender: "Male",
-      age: 30,
-      dateOfEmployment: "2020-01-15",
-      phoneNumber: "123-456-7890"
-    },
-    {
-      id: "EMP002",
-      firstName: "Jane",
-      lastName: "Smith",
-      email: "jane.smith@example.com",
-      gender: "Female",
-      age: 28,
-      dateOfEmployment: "2019-03-22",
-      phoneNumber: "987-654-3210"
-    }
-  ];
+  const [employeeData, setEmployeeData] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Fetch users from the server
+    axios
+      .get("http://localhost:3000/staff")
+      .then((response) => {
+        setEmployeeData(response.data);
+        setError(null);
+      })
+      .catch((error) => {
+        console.error("Error fetching users:", error);
+        setError("Failed to fetch users.");
+      });
+  }, []);
 
   return (
     <div className="Home">
@@ -54,19 +50,20 @@ function Staff() {
             </thead>
             <tbody>
               {employeeData.map((employee) => (
-                <tr key={employee.id}>
-                  <td>{employee.id}</td>
-                  <td>{employee.firstName}</td>
-                  <td>{employee.lastName}</td>
+                <tr key={employee.emp_id}>
+                  <td>{employee.emp_id}</td>
+                  <td>{employee.f_name}</td>
+                  <td>{employee.l_name}</td>
                   <td>{employee.email}</td>
                   <td>{employee.gender}</td>
                   <td>{employee.age}</td>
-                  <td>{employee.dateOfEmployment}</td>
-                  <td>{employee.phoneNumber}</td>
+                  <td>{employee.date}</td>
+                  <td>{employee.phone}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          {error && <p style={{color: 'red'}}>{error}</p>}
         </div>
       </section>
     </div>
