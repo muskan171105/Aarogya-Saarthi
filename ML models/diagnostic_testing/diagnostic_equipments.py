@@ -2,15 +2,13 @@ import pandas as pd
 import numpy as np
 import joblib
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import LabelEncoder
 from pymongo import MongoClient
 
 # Connect to MongoDB
-client = MongoClient("mongodb://localhost:27017/")
-db = client["hospitalDB"]
-collection = db["diagnostic_collection"]
+client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")
+db = client["AarogyaSaarthi"]
+collection = db["DiagnosticEquipments"]
 
 # Load dataset from MongoDB
 data = pd.DataFrame(list(collection.find()))
@@ -24,29 +22,32 @@ data = data.drop(columns=['_id'])
 # Ensure 'stock_available' column is numeric
 data['stock_available'] = pd.to_numeric(data['stock_available'], errors='coerce')
 
-# Encode categorical equipment names
-le = LabelEncoder()
-data['Equipment'] = le.fit_transform(data['diagnostic_equipments'])  # Correct column name
+# Get all unique equipment names
+equipment_names = data['diagnostic_equipments'].unique()
 
-# Define features (X) and target (y)
-X = data.drop(columns=['diagnostic_equipments', 'stock_available'])  # Exclude diagnostic_equipments and stock_available from X
-y = data["stock_available"]
+# Train and save a separate Linear Regression model for each equipment
+for equipment in equipment_names:
+    equipment_data = data[data['diagnostic_equipments'] == equipment]
 
-# Split dataset
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # Check if there's enough data for training
+    if len(equipment_data) < 2:
+        print(f"Skipping {equipment} due to insufficient data.")
+        continue
 
-# Train Random Forest model
-rf_model = RandomForestClassifier(random_state=42)
-rf_model.fit(X_train, y_train)
+    # Create time steps (assuming past stock data is time-sequenced)
+    X = np.array(range(len(equipment_data))).reshape(-1, 1)  # Time steps
+    y = equipment_data['stock_available'].values  # Stock values
 
-# Train Linear Regression model for future stock prediction
-linear_model = LinearRegression()
-X_numeric = np.array(range(len(y))).reshape(-1, 1)
-linear_model.fit(X_numeric, y)
+    # Split data into train and test sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Save models using joblib
-joblib.dump(rf_model, "rf_model.joblib")
-joblib.dump(linear_model, "linear_model.joblib")
-joblib.dump(le, "label_encoder.joblib")
+    # Train Linear Regression model
+    linear_model = LinearRegression()
+    linear_model.fit(X_train, y_train)
 
-print("Models trained and saved successfully!")
+    # Save the model with a unique name
+    model_filename = f"{equipment.replace(' ', '_').lower()}_model.joblib"
+    joblib.dump(linear_model, model_filename)
+    print(f"Model for {equipment} saved as {model_filename}")
+
+print("All models trained and saved successfully!")

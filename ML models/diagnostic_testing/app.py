@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 import joblib
-import numpy as np
+import os
+import random
 from pymongo import MongoClient
 
 # Initialize Flask app
@@ -11,49 +12,44 @@ client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mon
 db = client["AarogyaSaarthi"]
 collection = db["DiagnosticEquipments"]
 
-# Load trained models
-rf_model = joblib.load("rf_model.joblib")
-linear_model = joblib.load("linear_model.joblib")
+# Directory where models are saved
+MODEL_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Function to clean equipment names in MongoDB (Run once)
-def clean_equipment_names():
-    for doc in collection.find():
-        if "diagnostic_equipments" in doc:
-            trimmed_name = doc["diagnostic_equipments"].strip()
-            collection.update_one({"_id": doc["_id"]}, {"$set": {"diagnostic_equipments": trimmed_name}})
+# Function to generate minor variations
+def generate_realistic_variation(base_value):
+    variations = [-2, -1, 0, 1, 2]  # Small variations only
+    return [max(0, base_value + random.choice(variations)) for _ in range(3)]  # Keeps stock >= 0
 
-# Run the cleaning function once to remove spaces
-clean_equipment_names()
-
-# Endpoint to get stock availability from MongoDB
-@app.route('/get_stock', methods=['GET'])
-def get_stock():
-    try:
-        equipment_name = request.args.get("equipment")
-        if not equipment_name:
-            return jsonify({"error": "Equipment name is required"}), 400
-
-        # Trim spaces and search case-insensitively in MongoDB
-        stock_data = collection.find_one(
-            {"diagnostic_equipments": {"$regex": f"^{equipment_name.strip()}$", "$options": "i"}}, 
-            {"_id": 0, "stock_available": 1}
-        )
-
-        if stock_data:
-            return jsonify({"stock_available": stock_data["stock_available"]})
-        else:
-            return jsonify({"error": "Equipment not found"}), 404
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-# Endpoint for predicting future stock requirement using Linear Regression
+# Endpoint to predict future stock for ALL equipment
 @app.route('/predict_future_stock', methods=['POST'])
 def predict_future_stock():
     try:
-        data = request.get_json()
-        future_time_step = data.get("time_step", 1)
-        future_stock = linear_model.predict([[future_time_step]])
-        return jsonify({"predicted_future_stock": int(future_stock[0])})
+        # Fetch all equipment names from MongoDB
+        all_stock_data = collection.find({}, {"diagnostic_equipments": 1, "_id": 0})
+
+        stock_predictions = {}
+
+        for item in all_stock_data:
+            equipment_name = item["diagnostic_equipments"]
+
+            # Convert equipment name to match saved model filenames
+            model_filename = f"{equipment_name.replace(' ', '_').lower()}_model.joblib"
+            model_path = os.path.join(MODEL_DIR, model_filename)
+
+            # Check if model exists
+            if os.path.exists(model_path):
+                model = joblib.load(model_path)
+                base_prediction = max(0, int(model.predict([[1]])[0]))
+
+                # Generate 3 future predictions with minor variations
+                future_stock = generate_realistic_variation(base_prediction)
+
+                stock_predictions[equipment_name] = future_stock
+            else:
+                stock_predictions[equipment_name] = "Model not found"
+
+        return jsonify({"predicted_stock": stock_predictions})
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
