@@ -30,6 +30,20 @@ async function fetchPPEData() {
     }
 }
 
+// New Route: Fetch PPE Availability for Display
+app.get("/fetch-ppe", async (req, res) => {
+    try {
+        const ppeData = await fetchPPEData();
+        if (!ppeData || ppeData.length === 0) {
+            return res.status(404).json({ error: "No PPE data available." });
+        }
+        res.json({ success: true, data: ppeData });
+    } catch (error) {
+        console.error("Error fetching PPE data:", error.message);
+        res.status(500).json({ error: "Internal server error", details: error.message });
+    }
+});
+
 // Predict PPE stock without client input
 app.post("/predict-ppe", async (req, res) => {
     try {
@@ -43,7 +57,7 @@ app.post("/predict-ppe", async (req, res) => {
             [no_of_staff, Avg_Monthly_PPE_Consumption, ECLW]
         );
 
-        // 🔹 Change from GET to POST (Flask expects POST now)
+        // 🔹 Send POST request to Flask for prediction
         const response = await axios.post(`${FLASK_API_URL}/predict-ppe`, { features });
 
         res.json(response.data);
@@ -55,5 +69,5 @@ app.post("/predict-ppe", async (req, res) => {
 
 const PORT = 3005;
 app.listen(PORT, () => {
-    console.log(`Node.js server running on port ${PORT}`);
+    console.log('Node.js server running on port ${PORT}`);
 });
