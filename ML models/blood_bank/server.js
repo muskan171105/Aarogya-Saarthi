@@ -2,56 +2,49 @@ const express = require("express");
 const { MongoClient } = require("mongodb");
 
 const app = express();
-const PORT = 3001;
-const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
+const port = 3001;
 
-const client = new MongoClient(MONGO_URI);
-const dbName = "AarogyaSaarthi";
-const collectionName = "BloodBank";
+// MongoDB connection
+const url = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
+const dbName = "AarogyaSaarthi";  // Replace with your database name
+const collectionName = "BloodBank";  // Replace with your collection name
 
-// Blood type mapping
-const bloodTypeMapping = {
-    1: "A+",
-    2: "A-",
+const client = new MongoClient(url);
+
+// Mapping of blood type IDs to blood group names
+const bloodTypeMap = {
+    1: "O+",
+    2: "A+",
     3: "B+",
-    4: "B-",
-    5: "AB+",
-    6: "AB-",
-    7: "O+",
-    8: "O-"
+    4: "AB+",
+    5: "O-",
+    6: "A-",
+    7: "B-",
+    8: "AB-"
 };
 
-app.get("/blood-requirement", async (req, res) => {
+app.get("/blood_data", async (req, res) => {
     try {
         await client.connect();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
+        
+        const data = await collection.find({ "Types of blood": { $in: Object.keys(bloodTypeMap).map(Number) } }).toArray();
 
-        const data = await collection.find({}, { projection: { _id: 0, "Types of blood": 1, Output: 1 } }).toArray();
+        const result = data.map(doc => ({
+            "Blood Type": bloodTypeMap[doc["Types of blood"]],
+            "Output": doc["Output"]
+        }));
 
-        if (!data.length) {
-            return res.status(404).json({ error: "No data available" });
-        }
-
-        let bloodDemand = {};
-
-        data.forEach(entry => {
-            let bloodType = bloodTypeMapping[entry["Types of blood"]];
-            let demand = entry["Output"] || 0;
-
-            if (bloodType) {  // Exclude "Unknown" entries
-                bloodDemand[bloodType] = (bloodDemand[bloodType] || 0) + demand;
-            }
-        });
-
-        res.json(bloodDemand);
-    } catch (error) {
-        res.status(500).json({ error: "Internal Server Error", details: error.message });
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error fetching data");
     } finally {
         await client.close();
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}/blood_data`);
 });
