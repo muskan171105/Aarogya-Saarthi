@@ -1,88 +1,69 @@
-from flask import Flask, jsonify
 import joblib
 import pandas as pd
 from pymongo import MongoClient
-import os
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
 # MongoDB Connection
-client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")  
-db = client["AarogyaSaarthi"]
-collection = db["Bed"]
+MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/"
+DB_NAME = "AarogyaSaarthi"
+COLLECTION_NAME = "MedicalEquipments"
 
-MODEL_PATH = "medical_equipment_model.pkl"
+client = MongoClient(MONGO_URI)
+db = client[DB_NAME]
+collection = db[COLLECTION_NAME]
 
 def fetch_data():
-    """Fetches data from MongoDB and preprocesses it."""
-    data = list(collection.find({}, {'_id': 0}))  # Exclude `_id` field
+    """Fetches all medical equipment data from MongoDB."""
+    data = list(collection.find({}, {"_id": 0}))  # Exclude `_id`
     df = pd.DataFrame(data)
 
     if df.empty:
         raise ValueError("No data found in MongoDB collection.")
 
-    # Prepare features and target
-    X = df.drop(columns=['Equipment_Availability'])  # Features
-    Y = df['Equipment_Availability']  # Target variable
-    
-    return X, Y
+    return df
 
-def load_model():
-    """Loads the saved model or trains a new one if not found."""
-    if os.path.exists(MODEL_PATH):
-        return joblib.load(MODEL_PATH)
-    else:
-        return None
+def load_models():
+    """Loads all trained models with feature names."""
+    models = {}
+    df = fetch_data()
+    equipment_types = df["Equipment_Type"].unique()
 
-@app.route('/train', methods=['GET'])
-def train_model():
-    """Train and save the model using MongoDB data."""
+    for equipment in equipment_types:
+        model_filename = f"{equipment.replace(' ', '_').lower()}_model.joblib"
+        try:
+            model = joblib.load(model_filename)  # Load model only
+            feature_names = None
+            models[equipment] = (model, feature_names)
+        except FileNotFoundError:
+            print(f"Warning: Model file {model_filename} not found. Skipping {equipment}")
+
+    return models
+
+models = load_models()
+
+@app.route("/predict_future_stock", methods=["POST"])  
+def predict_future_stock():
+    """Predicts future equipment availability for all equipment types."""
     try:
-        X, Y = fetch_data()
-        
-        from sklearn.model_selection import train_test_split
-        from sklearn.ensemble import RandomForestClassifier
-        
-        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+        df = fetch_data()
+        predictions = {}
 
-        model = RandomForestClassifier()
-        model.fit(X_train, Y_train)
+        for equipment, (model, _) in models.items():  # Ignore feature_names
+            equipment_data = df[df["Equipment_Type"] == equipment].copy()
 
-        # Save model
-        joblib.dump(model, MODEL_PATH)
-        return jsonify({"message": "✅ Model trained and saved successfully!"})
+            if not equipment_data.empty:
+                X_test = equipment_data[["Equipment_Availability"]]  # Use only Equipment_Availability
+
+                predicted_values = model.predict(X_test)
+                predictions[equipment] = predicted_values.tolist()
+
+        return jsonify({"predictions": predictions})
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/predict', methods=['GET'])
-def predict():
-    """Fetch input from MongoDB and predict medical equipment availability."""
-    try:
-        model = load_model()
-        if model is None:
-            return jsonify({"error": "⚠️ Model not trained yet! Please train first."}), 400
 
-        # Fetch data again (without target column) for prediction
-        X, _ = fetch_data()  # Ignore target column
-        predictions = model.predict(X)
-
-        # Add predictions to response
-        X['Predicted_Availability'] = predictions.tolist()
-        
-        return jsonify(X.to_dict(orient="records"))
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/fetch-data', methods=['GET'])
-def fetch_equipment_data():
-    """Fetch medical equipment data from MongoDB."""
-    try:
-        data = list(collection.find({}, {'_id': 0}))  # Exclude `_id` field
-        if not data:
-            return jsonify({"error": "No equipment data found!"}), 404
-        return jsonify(data)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True, port=5000)

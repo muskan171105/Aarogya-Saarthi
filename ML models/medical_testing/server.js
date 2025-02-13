@@ -1,67 +1,66 @@
-const express = require('express');
-const axios = require('axios');
+const express = require("express");
+const bodyParser = require("body-parser");
+const axios = require("axios");
 const cors = require('cors');
-const { MongoClient } = require('mongodb');
+const { MongoClient } = require("mongodb"); 
 
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(cors());
 
-const FLASK_API_URL = 'http://127.0.0.1:5000';  // Flask server URL
-const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/"; // MongoDB URL
+const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
 const DB_NAME = "AarogyaSaarthi";
-const COLLECTION_NAME = "MedicalEquipments";
+const COLLECTION_NAME = "MedicalEquipments";  // Updated collection name
 
-// Connect to MongoDB
-async function getMongoCollection() {
-    const client = new MongoClient(MONGO_URI);
-    await client.connect();
-    return client.db(DB_NAME).collection(COLLECTION_NAME);
-}
-
-// Fetch Medical Equipment Data
-app.get('/fetch-data', async (req, res) => {
+// Fetch all medical equipment stock from MongoDB
+app.get("/get_all_stock", async (req, res) => {
     try {
-        const collection = await getMongoCollection();
-        const data = await collection.find({}, { projection: { Equipment_Type: 1, _id: 0 } }).toArray();
+        const client = new MongoClient(MONGO_URI);
+        await client.connect();
+        const db = client.db(DB_NAME);
+        const collection = db.collection(COLLECTION_NAME);
 
-        if (data.length === 0) {
-            return res.status(404).json({ error: "No medical equipment data found!" });
+        console.log("Fetching all medical equipment stock...");
+        
+        // Fetch data (Updated field names)
+        const allStock = await collection.find({}, { projection: { Equipment_Type: 1, Equipment_Availability: 1, _id: 0 } }).toArray();
+
+        console.log("All Stock:", allStock);
+
+        await client.close();
+
+        if (!allStock.length) return res.status(404).json({ error: "No medical equipment found" });
+
+        res.json({ equipments: allStock });
+    } catch (error) {
+        console.error("Error in /get_all_stock:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Predict future stock for all medical equipment
+app.get("/predict_future_stock", async (req, res) => {
+    try {
+        console.log("Fetching predictions from Flask...");
+
+        // Send request to Flask ML server
+        const response = await axios.post("http://127.0.0.1:5000/predict_future_stock");
+
+        console.log("Flask Response:", response.data); // Debugging log
+
+        if (response.data.error) {
+            return res.status(500).json({ error: "Error from ML model", details: response.data.error });
         }
 
-        res.json(data);
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Train Model (Triggers Flask API)
-app.get('/train-model', async (req, res) => {
-    try {
-        const response = await axios.get(`${FLASK_API_URL}/train`);
         res.json(response.data);
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+        console.error("Error in /predict_future_stock:", error);
 
-// Predict Equipment Availability (Only Equipment Type + Prediction)
-app.get('/predict-equipment', async (req, res) => {
-    try {
-        const response = await axios.get(`${FLASK_API_URL}/predict`);
-
-        // Extract only required fields
-        const filteredData = response.data.map(item => ({
-            Equipment_Type: item.Equipment_Type,
-            Predicted_Availability: item.Predicted_Availability
-        }));
-
-        res.json(filteredData);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+        // Return the actual error details
+        res.status(500).json({ error: "Error fetching prediction from Flask server", details: error.message });
     }
 });
 
 const PORT = 3001;
-app.listen(PORT, () => console.log(`Node.js server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

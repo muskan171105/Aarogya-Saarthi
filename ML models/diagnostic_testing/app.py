@@ -10,7 +10,7 @@ app = Flask(__name__)
 # Connect to MongoDB
 client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")
 db = client["AarogyaSaarthi"]
-collection = db["DiagnosticEquipments"]
+collection = db["MedicalEquipments"]  # Updated collection name
 
 # Directory where models are saved
 MODEL_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -20,17 +20,17 @@ def generate_realistic_variation(base_value):
     variations = [-2, -1, 0, 1, 2]  # Small variations only
     return [max(0, base_value + random.choice(variations)) for _ in range(3)]  # Keeps stock >= 0
 
-# Endpoint to predict future stock for ALL equipment
+# Endpoint to predict future stock for ALL medical equipment
 @app.route('/predict_future_stock', methods=['POST'])
 def predict_future_stock():
     try:
         # Fetch all equipment names from MongoDB
-        all_stock_data = collection.find({}, {"diagnostic_equipments": 1, "_id": 0})
+        all_stock_data = collection.find({}, {"Equipment_Type": 1, "_id": 0})  # Updated field name
 
         stock_predictions = {}
 
         for item in all_stock_data:
-            equipment_name = item["diagnostic_equipments"]
+            equipment_name = item["Equipment_Type"]  # Updated field name
 
             # Convert equipment name to match saved model filenames
             model_filename = f"{equipment_name.replace(' ', '_').lower()}_model.joblib"

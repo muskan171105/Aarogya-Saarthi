@@ -1,33 +1,57 @@
 const express = require("express");
-const axios = require("axios");
-const bodyParser = require("body-parser");
+const { MongoClient } = require("mongodb");
 
 const app = express();
 const PORT = 3001;
-const FLASK_URL = "http://127.0.0.1:5000"; // Flask server URL
+const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
 
-app.use(bodyParser.json());
+const client = new MongoClient(MONGO_URI);
+const dbName = "AarogyaSaarthi";
+const collectionName = "BloodBank";
 
-// Route to get predictions from Flask
-app.post("/predict", async (req, res) => {
+// Blood type mapping
+const bloodTypeMapping = {
+    1: "A+",
+    2: "A-",
+    3: "B+",
+    4: "B-",
+    5: "AB+",
+    6: "AB-",
+    7: "O+",
+    8: "O-"
+};
+
+app.get("/blood-requirement", async (req, res) => {
     try {
-        const response = await axios.post(`${FLASK_URL}/predict`, req.body);
-        res.json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: "Error fetching prediction" });
-    }
-});
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
 
-// Route to retrain the model
-app.get("/retrain", async (req, res) => {
-    try {
-        const response = await axios.get(`${FLASK_URL}/retrain`);
-        res.json(response.data);
+        const data = await collection.find({}, { projection: { _id: 0, "Types of blood": 1, Output: 1 } }).toArray();
+
+        if (!data.length) {
+            return res.status(404).json({ error: "No data available" });
+        }
+
+        let bloodDemand = {};
+
+        data.forEach(entry => {
+            let bloodType = bloodTypeMapping[entry["Types of blood"]];
+            let demand = entry["Output"] || 0;
+
+            if (bloodType) {  // Exclude "Unknown" entries
+                bloodDemand[bloodType] = (bloodDemand[bloodType] || 0) + demand;
+            }
+        });
+
+        res.json(bloodDemand);
     } catch (error) {
-        res.status(500).json({ error: "Error retraining model" });
+        res.status(500).json({ error: "Internal Server Error", details: error.message });
+    } finally {
+        await client.close();
     }
 });
 
 app.listen(PORT, () => {
-    console.log(`Node.js server running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
