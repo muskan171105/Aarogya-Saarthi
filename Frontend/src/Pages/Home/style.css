@@ -682,3 +682,11 @@ tr:hover {
   overflow-x: auto; /* Add horizontal scrolling */
   max-height: 70vh;  /* Optional: Set a maximum height */
 }
+
+
+
+
+.recharts-y-axis .recharts-text {
+  fill: black !important;
+  font-size: 12px;
+}
