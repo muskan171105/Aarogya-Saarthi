@@ -86,5 +86,5 @@ app.get('/predict-beds', async (req, res) => {
     }
 });
 
-const PORT = 3003;
+const PORT = 3001;
 app.listen(PORT, () => console.log(`Node.js server running on port ${PORT}`));

@@ -67,7 +67,7 @@ app.post("/predict-ppe", async (req, res) => {
     }
 });
 
-const PORT = 3005;
+const PORT = 3001;
 app.listen(PORT, () => {
     console.log(`Node.js server running on port ${PORT}`);
 });

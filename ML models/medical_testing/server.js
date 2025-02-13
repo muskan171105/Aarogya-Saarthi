@@ -19,7 +19,7 @@ async function getMongoCollection() {
     return client.db(DB_NAME).collection(COLLECTION_NAME);
 }
 
-// 🟢 Fetch Medical Equipment Data
+// Fetch Medical Equipment Data
 app.get('/fetch-data', async (req, res) => {
     try {
         const collection = await getMongoCollection();
@@ -36,7 +36,7 @@ app.get('/fetch-data', async (req, res) => {
     }
 });
 
-// 🟢 Train Model (Triggers Flask API)
+// Train Model (Triggers Flask API)
 app.get('/train-model', async (req, res) => {
     try {
         const response = await axios.get(`${FLASK_API_URL}/train`);
@@ -46,7 +46,7 @@ app.get('/train-model', async (req, res) => {
     }
 });
 
-// 🟢 Predict Equipment Availability (Only Equipment Type + Prediction)
+// Predict Equipment Availability (Only Equipment Type + Prediction)
 app.get('/predict-equipment', async (req, res) => {
     try {
         const response = await axios.get(`${FLASK_API_URL}/predict`);
@@ -64,4 +64,4 @@ app.get('/predict-equipment', async (req, res) => {
 });
 
 const PORT = 3001;
-app.listen(PORT, () => console.log(`🚀 Node.js server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Node.js server running on port ${PORT}`));

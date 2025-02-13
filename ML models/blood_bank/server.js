@@ -3,7 +3,7 @@ const axios = require("axios");
 const bodyParser = require("body-parser");
 
 const app = express();
-const PORT = 5000;
+const PORT = 3001;
 const FLASK_URL = "http://127.0.0.1:5000"; // Flask server URL
 
 app.use(bodyParser.json());

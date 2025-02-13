@@ -22,7 +22,7 @@ app.get("/get_all_stock", async (req, res) => {
         const db = client.db(DB_NAME);
         const collection = db.collection(COLLECTION_NAME);
 
-        console.log("hi");
+        console.log("Sample");
         // Fetch data
         const allStock = await collection.find({}, { projection: { diagnostic_equipments: 1, stock_available: 1, _id: 0 } }).toArray();
 
@@ -65,5 +65,5 @@ app.get("/predict_future_stock", async (req, res) => {
 
 
 
-const PORT = 3002;
+const PORT = 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

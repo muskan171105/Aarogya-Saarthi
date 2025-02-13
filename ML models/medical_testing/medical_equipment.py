@@ -9,9 +9,7 @@ import os
 # MongoDB Connection
 client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")  
 db = client["AarogyaSaarthi"]
-collection = db["Bed"]
-
-MODEL_PATH = "medical_equipment_model.pkl"
+collection = db["MedicalEquipments"]
 
 def fetch_data():
     """Fetches data from MongoDB and preprocesses it."""
@@ -21,39 +19,42 @@ def fetch_data():
     if df.empty:
         raise ValueError("No data found in MongoDB collection.")
 
-    # Encode categorical variable
-    le = LabelEncoder()
-    df['Equipments'] = le.fit_transform(df['Equipment_Type'])
+    return df
 
-    # Prepare features and target
-    X = df.drop(columns=['Equipment_Type'])
-    Y = df['Equipment_Availability']
-    
-    return X, Y
-
-def train_and_save_model():
-    """Trains and saves the ML model using MongoDB data."""
+def train_and_save_models():
+    """Trains and saves separate models for each equipment type."""
     try:
-        X, Y = fetch_data()
-        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+        df = fetch_data()
+        
+        # Encode categorical variables
+        le = LabelEncoder()
+        df['Equipments'] = le.fit_transform(df['Equipment_Type'])
+        
+        # Get unique equipment types
+        equipment_types = df['Equipment_Type'].unique()
 
-        model = RandomForestClassifier()
-        model.fit(X_train, Y_train)
+        for equipment in equipment_types:
+            equipment_data = df[df['Equipment_Type'] == equipment]
+            
+            if len(equipment_data) < 2:
+                print(f"Skipping {equipment} due to insufficient data.")
+                continue
 
-        # Save model
-        joblib.dump(model, MODEL_PATH)
-        print("✅ Model trained and saved successfully!")
+            X = equipment_data.drop(columns=['Equipment_Type', 'Equipment_Availability'])
+            Y = equipment_data['Equipment_Availability']
+            
+            X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+            
+            model = RandomForestClassifier()
+            model.fit(X_train, Y_train)
+            
+            model_filename = f"{equipment.replace(' ', '_').lower()}_model.joblib"
+            joblib.dump(model, model_filename)
+            print(f"Model for {equipment} saved as {model_filename}")
+
+        print("All models trained and saved successfully!")
     except Exception as e:
-        print(f"❌ Error training model: {e}")
-
-def load_model():
-    """Loads the saved model or trains a new one if not found."""
-    if os.path.exists(MODEL_PATH):
-        return joblib.load(MODEL_PATH)
-    else:
-        print("⚠️ Model not found, training a new one...")
-        train_and_save_model()
-        return joblib.load(MODEL_PATH)
+        print(f"Error training models: {e}")
 
 if __name__ == "__main__":
-    train_and_save_model()  # Run this script to train & save the model
+    train_and_save_models()
