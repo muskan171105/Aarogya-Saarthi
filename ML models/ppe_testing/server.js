@@ -2,7 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const { MongoClient } = require("mongodb");
 
-const FLASK_API_URL = "http://127.0.0.1:5001"; // Flask server URL
+const FLASK_API_URL = "http://127.0.0.1:5000"; // Flask server URL
 const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
 const DB_NAME = "AarogyaSaarthi";
 const COLLECTION_NAME = "PPE";
@@ -30,22 +30,30 @@ async function fetchPPEData() {
     }
 }
 
-// New Route: Fetch PPE Availability for Display
+// Fetch PPE Availability
 app.get("/fetch-ppe", async (req, res) => {
     try {
         const ppeData = await fetchPPEData();
         if (!ppeData || ppeData.length === 0) {
             return res.status(404).json({ error: "No PPE data available." });
         }
-        res.json({ success: true, data: ppeData });
+
+        // Extract required fields
+        const filteredData = ppeData.map(({ PPE_Kits_Available_in_october, PPE_Kits_Available_in_November, PPE_Kits_Available_in_December }) => ({
+            PPE_Kits_Available_in_october,
+            PPE_Kits_Available_in_November,
+            PPE_Kits_Available_in_December
+        }));
+
+        res.json({ success: true, data: filteredData });
     } catch (error) {
         console.error("Error fetching PPE data:", error.message);
         res.status(500).json({ error: "Internal server error", details: error.message });
     }
 });
 
-// Predict PPE stock without client input
-app.post("/predict-ppe", async (req, res) => {
+// 🔹 Convert `/predict-ppe` to GET request
+app.get("/predict-ppe", async (req, res) => {
     try {
         const ppeData = await fetchPPEData();
         if (!ppeData || ppeData.length === 0) {
@@ -57,8 +65,8 @@ app.post("/predict-ppe", async (req, res) => {
             [no_of_staff, Avg_Monthly_PPE_Consumption, ECLW]
         );
 
-        // 🔹 Send POST request to Flask for prediction
-        const response = await axios.post(`${FLASK_API_URL}/predict-ppe`, { features });
+        // 🔹 Send GET request to Flask with query params
+        const response = await axios.get(`${FLASK_API_URL}/predict-ppe`, { params: { features: JSON.stringify(features) } });
 
         res.json(response.data);
     } catch (error) {
