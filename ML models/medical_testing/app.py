@@ -1,65 +1,88 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 import joblib
-import numpy as np
+import pandas as pd
 from pymongo import MongoClient
+import os
 
 app = Flask(__name__)
 
-# Load trained model
-model = joblib.load("medical_equipment_model.pkl")
-
 # MongoDB Connection
-MONGO_URI = "mongodb://localhost:27017"
-DB_NAME = "hospitalDB"
-COLLECTION_NAME = "medical_equipment"
-client = MongoClient(MONGO_URI)
-db = client[DB_NAME]
-collection = db[COLLECTION_NAME]
+client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")  
+db = client["AarogyaSaarthi"]
+collection = db["Bed"]
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    data = request.json
-    equipment_type = data.get("Equipment_Type")
+MODEL_PATH = "medical_equipment_model.pkl"
 
-    if not equipment_type:
-        return jsonify({"error": "Missing 'Equipment_Type' in request"}), 400
+def fetch_data():
+    """Fetches data from MongoDB and preprocesses it."""
+    data = list(collection.find({}, {'_id': 0}))  # Exclude `_id` field
+    df = pd.DataFrame(data)
 
-    # Fetch equipment details from MongoDB
-    equipment = collection.find_one({"Equipment_Type": equipment_type})
+    if df.empty:
+        raise ValueError("No data found in MongoDB collection.")
 
-    if not equipment:
-        return jsonify({"error": "Equipment not found in database"}), 404
+    # Prepare features and target
+    X = df.drop(columns=['Equipment_Availability'])  # Features
+    Y = df['Equipment_Availability']  # Target variable
+    
+    return X, Y
 
-    # Prepare input for model
-    input_data = np.array([[equipment["Equipment_Availability"]]])
+def load_model():
+    """Loads the saved model or trains a new one if not found."""
+    if os.path.exists(MODEL_PATH):
+        return joblib.load(MODEL_PATH)
+    else:
+        return None
 
-    # Predict using the ML model
-    prediction = model.predict(input_data)
-
-    return jsonify({"prediction": str(prediction[0])})
-
-@app.route('/retrain', methods=['POST'])
-def retrain():
+@app.route('/train', methods=['GET'])
+def train_model():
+    """Train and save the model using MongoDB data."""
     try:
-        # Fetch all data from MongoDB
-        data = list(collection.find({}, {"_id": 1, "Equipment_Availability": 1}))
+        X, Y = fetch_data()
         
+        from sklearn.model_selection import train_test_split
+        from sklearn.ensemble import RandomForestClassifier
+        
+        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+
+        model = RandomForestClassifier()
+        model.fit(X_train, Y_train)
+
+        # Save model
+        joblib.dump(model, MODEL_PATH)
+        return jsonify({"message": "✅ Model trained and saved successfully!"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/predict', methods=['GET'])
+def predict():
+    """Fetch input from MongoDB and predict medical equipment availability."""
+    try:
+        model = load_model()
+        if model is None:
+            return jsonify({"error": "⚠️ Model not trained yet! Please train first."}), 400
+
+        # Fetch data again (without target column) for prediction
+        X, _ = fetch_data()  # Ignore target column
+        predictions = model.predict(X)
+
+        # Add predictions to response
+        X['Predicted_Availability'] = predictions.tolist()
+        
+        return jsonify(X.to_dict(orient="records"))
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/fetch-data', methods=['GET'])
+def fetch_equipment_data():
+    """Fetch medical equipment data from MongoDB."""
+    try:
+        data = list(collection.find({}, {'_id': 0}))  # Exclude `_id` field
         if not data:
-            return jsonify({"error": "No data available for retraining"}), 400
-
-        # Prepare dataset
-        X = np.array([[d["Equipment_Availability"], d["_id"]] for d in data])
-        Y = np.random.randint(0, 2, size=(len(data),))  # Dummy labels for training
-        
-        # Retrain model
-        model.fit(X, Y)
-        
-        # Save retrained model
-        joblib.dump(model, "medical_equipment_model.pkl")
-
-        return jsonify({"message": "Model retrained successfully!"})
+            return jsonify({"error": "No equipment data found!"}), 404
+        return jsonify(data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)

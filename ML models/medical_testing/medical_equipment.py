@@ -7,10 +7,9 @@ from sklearn.preprocessing import LabelEncoder
 import os
 
 # MongoDB Connection
-MONGO_URI = "mongodb://localhost:27017"  # Change if using a remote database
-client = MongoClient(MONGO_URI)
-db = client['hospitalDB']  # Database name
-collection = db['medical_equipment']  # Collection name
+client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")  
+db = client["AarogyaSaarthi"]
+collection = db["Bed"]
 
 MODEL_PATH = "medical_equipment_model.pkl"
 

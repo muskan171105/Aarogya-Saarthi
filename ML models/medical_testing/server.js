@@ -7,70 +7,61 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const FLASK_API_URL = 'http://127.0.0.1:5000';
-const MONGO_URI = "mongodb://localhost:27017";
-const DB_NAME = "hospitalDB";
-const COLLECTION_NAME = "medical_equipment";
+const FLASK_API_URL = 'http://127.0.0.1:5000';  // Flask server URL
+const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/"; // MongoDB URL
+const DB_NAME = "AarogyaSaarthi";
+const COLLECTION_NAME = "MedicalEquipments";
 
-// Fetch data from MongoDB
+// Connect to MongoDB
+async function getMongoCollection() {
+    const client = new MongoClient(MONGO_URI);
+    await client.connect();
+    return client.db(DB_NAME).collection(COLLECTION_NAME);
+}
+
+// 🟢 Fetch Medical Equipment Data
 app.get('/fetch-data', async (req, res) => {
     try {
-        const client = new MongoClient(MONGO_URI);
-        await client.connect();
-        const db = client.db(DB_NAME);
-        const collection = db.collection(COLLECTION_NAME);
-        
-        const data = await collection.find({}).toArray();
-        await client.close();
-        
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+        const collection = await getMongoCollection();
+        const data = await collection.find({}, { projection: { Equipment_Type: 1, _id: 0 } }).toArray();
 
-// Predict equipment availability based on Equipment Type
-app.post('/predict-equipment', async (req, res) => {
-    const { Equipment_Type } = req.body;
-
-    if (!Equipment_Type) {
-        return res.status(400).json({ error: "Missing 'Equipment_Type' in request body" });
-    }
-
-    try {
-        // Connect to MongoDB
-        const client = new MongoClient(MONGO_URI);
-        await client.connect();
-        const db = client.db(DB_NAME);
-        const collection = db.collection(COLLECTION_NAME);
-
-        // Fetch equipment details from MongoDB
-        const equipment = await collection.findOne({ Equipment_Type });
-
-        if (!equipment) {
-            await client.close();
-            return res.status(404).json({ error: "Equipment not found in database" });
+        if (data.length === 0) {
+            return res.status(404).json({ error: "No medical equipment data found!" });
         }
 
-        // Send data to Flask for prediction
-        const response = await axios.post(`${FLASK_API_URL}/predict`, { Equipment_Type });
-
-        await client.close();
-        res.json(response.data);
+        res.json(data);
     } catch (error) {
+        console.error("Error fetching data:", error);
         res.status(500).json({ error: error.message });
     }
 });
 
-// Retrain Model
-app.post('/retrain-model', async (req, res) => {
+// 🟢 Train Model (Triggers Flask API)
+app.get('/train-model', async (req, res) => {
     try {
-        const response = await axios.post(`${FLASK_API_URL}/retrain`);
+        const response = await axios.get(`${FLASK_API_URL}/train`);
         res.json(response.data);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-const PORT = 3000;
+// 🟢 Predict Equipment Availability (Only Equipment Type + Prediction)
+app.get('/predict-equipment', async (req, res) => {
+    try {
+        const response = await axios.get(`${FLASK_API_URL}/predict`);
+
+        // Extract only required fields
+        const filteredData = response.data.map(item => ({
+            Equipment_Type: item.Equipment_Type,
+            Predicted_Availability: item.Predicted_Availability
+        }));
+
+        res.json(filteredData);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+const PORT = 3001;
 app.listen(PORT, () => console.log(`🚀 Node.js server running on port ${PORT}`));
