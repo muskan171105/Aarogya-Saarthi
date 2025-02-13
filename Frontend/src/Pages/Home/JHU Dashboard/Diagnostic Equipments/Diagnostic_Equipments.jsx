@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import SideBar from "../../SideBar";
 import "../../style.css";
+// import { Bar } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -60,9 +61,9 @@ function Diagnostic_Equipments() {
     }
   };
 
-  // Chart Data
+
   const chartData = {
-    labels: equipmentData.map((item) => item.diagnostic_equipments), // FIXED PROPERTY NAME
+    labels: equipmentData.map((item) => item.diagnostic_equipments), // X-axis labels
     datasets: [
       {
         label: "Current Stock",
@@ -70,21 +71,50 @@ function Diagnostic_Equipments() {
         backgroundColor: "#3498db",
       },
       {
-        label: "Predicted (1 Month)",
+        label: "March",
         data: equipmentData.map((item) => predictedData[item.diagnostic_equipments]?.[0] || 0),
         backgroundColor: "#ff9800",
       },
       {
-        label: "Predicted (2 Months)",
+        label: "April",
         data: equipmentData.map((item) => predictedData[item.diagnostic_equipments]?.[1] || 0),
         backgroundColor: "#4caf50",
       },
       {
-        label: "Predicted (3 Months)",
+        label: "May",
         data: equipmentData.map((item) => predictedData[item.diagnostic_equipments]?.[2] || 0),
         backgroundColor: "#e74c3c",
       },
     ],
+  };
+
+  // Chart options
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Diagnostic Equipment Stock Analysis",
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Equipment Name",
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Stock Count",
+        },
+        beginAtZero: true,
+      },
+    },
   };
 
   return (
@@ -102,8 +132,8 @@ function Diagnostic_Equipments() {
           ) : (
             <>
               {/* Bar Chart */}
-              <div className="chart-container">
-                <Bar data={chartData} />
+              <div style={{ width: "80%", margin: "0 auto" }}>
+                <Bar data={chartData} options={chartOptions} />
               </div>
 
               {/* Data Table */}
@@ -113,9 +143,9 @@ function Diagnostic_Equipments() {
                   <tr>
                     <th>Equipment</th>
                     <th>Current Stock</th>
-                    <th>Predicted (1 Month)</th>
-                    <th>Predicted (2 Months)</th>
-                    <th>Predicted (3 Months)</th>
+                    <th>March</th>
+                    <th>April</th>
+                    <th>May</th>
                   </tr>
                 </thead>
                 <tbody>
