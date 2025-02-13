@@ -20,12 +20,14 @@ data.columns = data.columns.str.strip()
 data = data.drop(columns=['_id'])
 
 # Ensure numerical columns are properly formatted
-data['Number_of_Patients'] = pd.to_numeric(data['Number_of_Patients'], errors='coerce')
-data['Number_of_Staff'] = pd.to_numeric(data['Number_of_Staff'], errors='coerce')
 data['Equipment_Availability'] = pd.to_numeric(data['Equipment_Availability'], errors='coerce')
+data['Stock_Availability'] = pd.to_numeric(data['Stock_Availability'], errors='coerce')
 
 # Get all unique equipment types
 equipment_types = data['Equipment_Type'].unique()
+
+# Dictionary to store predicted stock for each equipment
+predicted_stock = {}
 
 # Train and save a separate Linear Regression model for each equipment type
 for equipment in equipment_types:
@@ -37,8 +39,8 @@ for equipment in equipment_types:
         continue
 
     # Create time steps (assuming past stock data is time-sequenced)
-    X = np.array(range(len(equipment_data))).reshape(-1, 1)  # Time steps
-    y = equipment_data['Equipment_Availability'].values  # Equipment availability values
+    X = equipment_data[['Equipment_Availability']].values  # Features
+    y = equipment_data['Stock_Availability'].values  # Target
 
     # Split data into train and test sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -47,9 +49,16 @@ for equipment in equipment_types:
     linear_model = LinearRegression()
     linear_model.fit(X_train, y_train)
 
-    # Save the model with a unique name
+    # Predict stock availability for the next **3 months (30, 60, 90 days)**
+    future_availability = np.array([[30], [60], [90]])  # Only 3 values
+    future_stock = linear_model.predict(future_availability)
+
+    # Round predictions to nearest integer and store
+    predicted_stock[equipment] = [round(value) for value in future_stock]
+
+    # Save the model
     model_filename = f"{equipment.replace(' ', '_').lower()}_model.joblib"
     joblib.dump(linear_model, model_filename)
-    print(f"Model for {equipment} saved as {model_filename}")
 
-print("All models trained and saved successfully!")
+# Print the final 3-value prediction for each equipment type
+print({"predicted_stock": predicted_stock})

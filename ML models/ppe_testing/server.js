@@ -30,7 +30,7 @@ async function fetchPPEData() {
     }
 }
 
-// Fetch PPE Availability
+// Fetch PPE Availability with Averages
 app.get("/fetch-ppe", async (req, res) => {
     try {
         const ppeData = await fetchPPEData();
@@ -38,14 +38,23 @@ app.get("/fetch-ppe", async (req, res) => {
             return res.status(404).json({ error: "No PPE data available." });
         }
 
-        // Extract required fields
-        const filteredData = ppeData.map(({ PPE_Kits_Available_in_october, PPE_Kits_Available_in_November, PPE_Kits_Available_in_December }) => ({
-            PPE_Kits_Available_in_october,
-            PPE_Kits_Available_in_November,
-            PPE_Kits_Available_in_December
-        }));
+        // Compute averages
+        let totalEntries = ppeData.length;
+        let sumOctober = 0, sumNovember = 0, sumDecember = 0;
 
-        res.json({ success: true, data: filteredData });
+        ppeData.forEach(({ PPE_Kits_Available_in_october, PPE_Kits_Available_in_November, PPE_Kits_Available_in_December }) => {
+            sumOctober += PPE_Kits_Available_in_october || 0;
+            sumNovember += PPE_Kits_Available_in_November || 0;
+            sumDecember += PPE_Kits_Available_in_December || 0;
+        });
+
+        const averages = {
+            PPE_Kits_Available_in_october: sumOctober / totalEntries,
+            PPE_Kits_Available_in_November: sumNovember / totalEntries,
+            PPE_Kits_Available_in_December: sumDecember / totalEntries
+        };
+
+        res.json({ success: true, averages });
     } catch (error) {
         console.error("Error fetching PPE data:", error.message);
         res.status(500).json({ error: "Internal server error", details: error.message });
