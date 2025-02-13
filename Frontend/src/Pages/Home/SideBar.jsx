@@ -132,12 +132,19 @@ function SideBar(){
               <li><Link to="/ppe_kit_requirement">PPE Kit requirement</Link></li>
               <li><Link to="/diagnostic_equipments">Diagnostic Equipments</Link></li>
               <li><Link to="/prediction"> Medical Equipments</Link></li>
+              <li><Link to="/Blood_Bank">Blood Bank</Link></li>
             </ul>
           </li>
           <li>
             <Link to="/workload">
               <i className='bx bxs-briefcase'></i>
               <span className="link_name">Workload</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/Salary_payments">
+              <i className='bx bxs-briefcase'></i>
+              <span className="link_name">Salary payments</span>
             </Link>
           </li>
         </ul>
