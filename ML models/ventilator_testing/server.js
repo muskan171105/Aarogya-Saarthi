@@ -1,8 +1,10 @@
-const express = require('express');
-const { MongoClient } = require('mongodb');
+import express from 'express';
+import { MongoClient } from 'mongodb';
+import cors from 'cors';
 
 const app = express();
 const PORT = 3001;
+app.use(cors());
 
 // Replace with your MongoDB connection string
 const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
