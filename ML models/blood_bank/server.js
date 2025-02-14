@@ -1,33 +1,50 @@
 const express = require("express");
-const axios = require("axios");
-const bodyParser = require("body-parser");
+const { MongoClient } = require("mongodb");
 
 const app = express();
-const PORT = 5000;
-const FLASK_URL = "http://127.0.0.1:5000"; // Flask server URL
+const port = 3001;
 
-app.use(bodyParser.json());
+// MongoDB connection
+const url = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
+const dbName = "AarogyaSaarthi";  // Replace with your database name
+const collectionName = "BloodBank";  // Replace with your collection name
 
-// Route to get predictions from Flask
-app.post("/predict", async (req, res) => {
+const client = new MongoClient(url);
+
+// Mapping of blood type IDs to blood group names
+const bloodTypeMap = {
+    1: "O+",
+    2: "A+",
+    3: "B+",
+    4: "AB+",
+    5: "O-",
+    6: "A-",
+    7: "B-",
+    8: "AB-"
+};
+
+app.get("/blood_data", async (req, res) => {
     try {
-        const response = await axios.post(`${FLASK_URL}/predict`, req.body);
-        res.json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: "Error fetching prediction" });
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
+        
+        const data = await collection.find({ "Types of blood": { $in: Object.keys(bloodTypeMap).map(Number) } }).toArray();
+
+        const result = data.map(doc => ({
+            "Blood Type": bloodTypeMap[doc["Types of blood"]],
+            "Output": doc["Output"]
+        }));
+
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error fetching data");
+    } finally {
+        await client.close();
     }
 });
 
-// Route to retrain the model
-app.get("/retrain", async (req, res) => {
-    try {
-        const response = await axios.get(`${FLASK_URL}/retrain`);
-        res.json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: "Error retraining model" });
-    }
-});
-
-app.listen(PORT, () => {
-    console.log(`Node.js server running on port ${PORT}`);
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}/blood_data`);
 });

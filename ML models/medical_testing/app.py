@@ -1,65 +1,69 @@
-from flask import Flask, request, jsonify
 import joblib
-import numpy as np
+import pandas as pd
 from pymongo import MongoClient
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-# Load trained model
-model = joblib.load("medical_equipment_model.pkl")
-
 # MongoDB Connection
-MONGO_URI = "mongodb://localhost:27017"
-DB_NAME = "hospitalDB"
-COLLECTION_NAME = "medical_equipment"
+MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/"
+DB_NAME = "AarogyaSaarthi"
+COLLECTION_NAME = "MedicalEquipments"
+
 client = MongoClient(MONGO_URI)
 db = client[DB_NAME]
 collection = db[COLLECTION_NAME]
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    data = request.json
-    equipment_type = data.get("Equipment_Type")
+def fetch_data():
+    """Fetches all medical equipment data from MongoDB."""
+    data = list(collection.find({}, {"_id": 0}))  # Exclude `_id`
+    df = pd.DataFrame(data)
 
-    if not equipment_type:
-        return jsonify({"error": "Missing 'Equipment_Type' in request"}), 400
+    if df.empty:
+        raise ValueError("No data found in MongoDB collection.")
 
-    # Fetch equipment details from MongoDB
-    equipment = collection.find_one({"Equipment_Type": equipment_type})
+    return df
 
-    if not equipment:
-        return jsonify({"error": "Equipment not found in database"}), 404
+def load_models():
+    """Loads all trained models with feature names."""
+    models = {}
+    df = fetch_data()
+    equipment_types = df["Equipment_Type"].unique()
 
-    # Prepare input for model
-    input_data = np.array([[equipment["Equipment_Availability"]]])
+    for equipment in equipment_types:
+        model_filename = f"{equipment.replace(' ', '_').lower()}_model.joblib"
+        try:
+            model = joblib.load(model_filename)  # Load model only
+            feature_names = None
+            models[equipment] = (model, feature_names)
+        except FileNotFoundError:
+            print(f"Warning: Model file {model_filename} not found. Skipping {equipment}")
 
-    # Predict using the ML model
-    prediction = model.predict(input_data)
+    return models
 
-    return jsonify({"prediction": str(prediction[0])})
+models = load_models()
 
-@app.route('/retrain', methods=['POST'])
-def retrain():
+@app.route("/predict_future_stock", methods=["POST"])  
+def predict_future_stock():
+    """Predicts future equipment availability for all equipment types."""
     try:
-        # Fetch all data from MongoDB
-        data = list(collection.find({}, {"_id": 1, "Equipment_Availability": 1}))
-        
-        if not data:
-            return jsonify({"error": "No data available for retraining"}), 400
+        df = fetch_data()
+        predictions = {}
 
-        # Prepare dataset
-        X = np.array([[d["Equipment_Availability"], d["_id"]] for d in data])
-        Y = np.random.randint(0, 2, size=(len(data),))  # Dummy labels for training
-        
-        # Retrain model
-        model.fit(X, Y)
-        
-        # Save retrained model
-        joblib.dump(model, "medical_equipment_model.pkl")
+        for equipment, (model, _) in models.items():  # Ignore feature_names
+            equipment_data = df[df["Equipment_Type"] == equipment].copy()
 
-        return jsonify({"message": "Model retrained successfully!"})
+            if not equipment_data.empty:
+                X_test = equipment_data[["Equipment_Availability"]]  # Use only Equipment_Availability
+
+                predicted_values = model.predict(X_test)
+                predictions[equipment] = predicted_values.tolist()
+
+        return jsonify({"predictions": predictions})
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)

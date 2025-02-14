@@ -1,68 +1,77 @@
-# Importing the dependencies
+# Importing required libraries
 import numpy as np
 import pandas as pd
-import os
-import random
 import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
-import tensorflow as tf
-import joblib  # Import joblib to save the model
+import joblib
+from pymongo import MongoClient
 
-# Loading the dataset
-df = pd.read_csv('ppe_kit.csv')
+# MongoDB Connection
+client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")
+db = client["AarogyaSaarthi"]
+collection = db["PPE"]
 
-# Removing the columns containing missing values
-df = df.dropna(axis=1, how='all')   
+# Fetch data from MongoDB
+df = pd.DataFrame(list(collection.find()))
 
-# Defining features (X) and target (y)
-X = df.drop(columns=['PPE_Kits_Available_in_october', 'PPE_Kits_Available_in_November', 'PPE_Kits_Available_in_December', 'PPE_Kits_Available_in_January'])
-y = df[['PPE_Kits_Available_in_october', 'PPE_Kits_Available_in_November', 'PPE_Kits_Available_in_December', 'PPE_Kits_Available_in_January']]
+# Check if data is retrieved
+if df.empty:
+    print("No matching data found in MongoDB.")
+    exit()
+
+# Remove unwanted MongoDB ObjectId column
+if '_id' in df.columns:
+    df = df.drop(columns=['_id'])
+
+# Define features (X) and target (y)
+X = df[['no_of_staff', 'Avg_Monthly_PPE_Consumption', 'ECLW']]  # Ensure these columns exist
+y = df[['PPE_Kits_Available_in_october', 'PPE_Kits_Available_in_November', 
+        'PPE_Kits_Available_in_December', 'PPE_Kits_Available_in_January']]  # Ensure these columns exist
 
 # Splitting the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=2)
 
-# Training the model
+# Training the Linear Regression model
 model = LinearRegression()
 model.fit(X_train, y_train)
 
-# Saving the trained model to a file
-joblib.dump(model, 'ppe_model.pkl')  # Save the model as 'ppe_model.pkl'
+# Saving the trained model
+joblib.dump(model, 'ppe_model.pkl')
 
-# Making predictions on training data
-training_data_prediction = model.predict(X_train)
-training_data_accuracy = r2_score(y_train, training_data_prediction)
-# print('Accuracy on training data:', training_data_accuracy)
+# Making predictions
+train_preds = model.predict(X_train)
+test_preds = model.predict(X_test)
 
-# Making predictions on testing data
-testing_data_prediction = model.predict(X_test)
-testing_data_accuracy = r2_score(y_test, testing_data_prediction)
-# print('Accuracy on testing data:', testing_data_accuracy)
+# Calculating R² scores
+train_r2 = r2_score(y_train, train_preds)
+test_r2 = r2_score(y_test, test_preds)
 
-# Backend code for prediction
-input_data = ([250, 250, 110])
-input_data_as_numpy_array = np.asarray(input_data)
-input_data_reshaped = input_data_as_numpy_array.reshape(1, -1)
-prediction = model.predict(input_data_reshaped)
-print('Number of PPE kits available in march', abs(int(prediction[0][0])))
-print('Number of PPE kits available in april', abs(int(prediction[0][1])))
-print('Number of PPE kits available in may', abs(int(prediction[0][2])))
+print(f"R² Score on Training Data: {train_r2:.6f}")
+print(f"R² Score on Testing Data: {test_r2:.6f}")
 
-# Sample data for demonstration
-data = [200, 100, 110, 115, int(prediction[0][0]), int(prediction[0][1]), int(prediction[0][2])]
-months = ['oct', 'nov', 'dec', 'jan', 'feb', 'mar', 'apr', 'may']
+# Example input for prediction (Ensure it matches the model's expected features)
+input_data = np.array([[250, 250, 110]])  # 3 features
+prediction = model.predict(input_data)
 
-# Plotting the data
+print("\nPredicted PPE Kits:")
+print(f'March: {int(abs(prediction[0][0]))}')
+print(f'April: {int(abs(prediction[0][1]))}')
+print(f'May: {int(abs(prediction[0][2]))}')
+print(f'June: {int(abs(prediction[0][3]))}')
+
+# Sample data for visualization
+data = [200, 100, 110, 115, int(prediction[0][0]), int(prediction[0][1]), int(prediction[0][2]), int(prediction[0][3])]
+months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May']
+
+# Plot PPE Kit predictions
 plt.figure(figsize=(10, 5))
 plt.plot(data, marker='o', linestyle='-', color='blue')
 
-# Add month names on the x-axis
 plt.xticks(ticks=range(len(months)), labels=months)
-
-plt.title("PPE kits Plot")
+plt.title("PPE Kits Prediction")
 plt.xlabel("Months")
-plt.ylabel("PPE kits")
+plt.ylabel("PPE Kits")
 plt.grid(True)
 plt.show()

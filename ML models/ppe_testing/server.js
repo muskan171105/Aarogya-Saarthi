@@ -1,36 +1,69 @@
 const express = require("express");
 const axios = require("axios");
+const { MongoClient } = require("mongodb");
+
+const FLASK_API_URL = "http://127.0.0.1:5001"; // Flask server URL
+const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
+const DB_NAME = "AarogyaSaarthi";
+const COLLECTION_NAME = "PPE";
 
 const app = express();
 app.use(express.json());
 
-// Predict PPE Stock
-app.post("/predict-ppe", async (req, res) => {
-    try {
-        const { features } = req.body;
-        if (!features || !Array.isArray(features)) {
-            return res.status(400).json({ error: "Invalid input. Expected an array of numbers." });
-        }
+// Function to fetch PPE data from MongoDB
+async function fetchPPEData() {
+    const client = new MongoClient(MONGO_URI);
 
-        const response = await axios.post("http://localhost:5001/predict-ppe", { features });
-        res.json(response.data);
+    try {
+        await client.connect();
+        const db = client.db(DB_NAME);
+        const collection = db.collection(COLLECTION_NAME);
+
+        // Fetch latest PPE data
+        const ppeData = await collection.find().toArray();
+        return ppeData;
     } catch (error) {
-        res.status(500).json({ error: error.message || "Server error" });
+        console.error("Error fetching data from MongoDB:", error);
+        return null;
+    } finally {
+        await client.close();
+    }
+}
+
+// New Route: Fetch PPE Availability for Display
+app.get("/fetch-ppe", async (req, res) => {
+    try {
+        const ppeData = await fetchPPEData();
+        if (!ppeData || ppeData.length === 0) {
+            return res.status(404).json({ error: "No PPE data available." });
+        }
+        res.json({ success: true, data: ppeData });
+    } catch (error) {
+        console.error("Error fetching PPE data:", error.message);
+        res.status(500).json({ error: "Internal server error", details: error.message });
     }
 });
 
-// Retrain PPE Model
-app.post("/retrain-ppe", async (req, res) => {
+// Predict PPE stock without client input
+app.post("/predict-ppe", async (req, res) => {
     try {
-        const { X, y } = req.body;
-        if (!X || !y || !Array.isArray(X) || !Array.isArray(y)) {
-            return res.status(400).json({ error: "Invalid training data. Expected lists of features and targets." });
+        const ppeData = await fetchPPEData();
+        if (!ppeData || ppeData.length === 0) {
+            return res.status(404).json({ error: "No data found in database." });
         }
 
-        const response = await axios.post("http://localhost:5001/retrain-ppe", { X, y });
+        // Extract features
+        const features = ppeData.map(({ no_of_staff, Avg_Monthly_PPE_Consumption, ECLW }) => 
+            [no_of_staff, Avg_Monthly_PPE_Consumption, ECLW]
+        );
+
+        // 🔹 Send POST request to Flask for prediction
+        const response = await axios.post(`${FLASK_API_URL}/predict-ppe`, { features });
+
         res.json(response.data);
     } catch (error) {
-        res.status(500).json({ error: error.message || "Server error" });
+        console.error("Error calling Flask API:", error.message);
+        res.status(500).json({ error: "Internal server error", details: error.message });
     }
 });
 

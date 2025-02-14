@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 import "../../style.css";
 import SideBar from "../../SideBar";
 
@@ -63,12 +63,10 @@ function Beds_requirement() {
                             <ResponsiveContainer width="100%" height={400}>
                                 <BarChart data={chartData}>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="month" />
+                                    <XAxis dataKey="month"/>
                                     <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Bar dataKey="bed_count" fill="#3498db" name="Current Bed Count" />  {/* Blue */}
-                                    <Bar dataKey="predicted_bed_count" fill="#e74c3c" name="Predicted Bed Count" />  {/* Red */}
+                                    <Bar dataKey="bed_count" fill="#3498db" />  {/* Blue */}
+                                    <Bar dataKey="predicted_bed_count" fill="#e74c3c" />  {/* Red */}
                                 </BarChart>
                             </ResponsiveContainer>
 

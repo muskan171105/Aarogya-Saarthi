@@ -1,60 +1,66 @@
-import joblib
 import pandas as pd
-from pymongo import MongoClient
+import numpy as np
+import joblib
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import LabelEncoder
-import os
+from sklearn.linear_model import LinearRegression
+from pymongo import MongoClient
 
-# MongoDB Connection
-MONGO_URI = "mongodb://localhost:27017"  # Change if using a remote database
-client = MongoClient(MONGO_URI)
-db = client['hospitalDB']  # Database name
-collection = db['medical_equipment']  # Collection name
+# Connect to MongoDB
+client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")
+db = client["AarogyaSaarthi"]
+collection = db["MedicalEquipments"]
 
-MODEL_PATH = "medical_equipment_model.pkl"
+# Load dataset from MongoDB
+data = pd.DataFrame(list(collection.find()))
 
-def fetch_data():
-    """Fetches data from MongoDB and preprocesses it."""
-    data = list(collection.find({}, {'_id': 0}))  # Exclude `_id` field
-    df = pd.DataFrame(data)
+# Strip leading and trailing spaces from column names
+data.columns = data.columns.str.strip()
 
-    if df.empty:
-        raise ValueError("No data found in MongoDB collection.")
+# Drop the _id column since it's not needed for the model
+data = data.drop(columns=['_id'])
 
-    # Encode categorical variable
-    le = LabelEncoder()
-    df['Equipments'] = le.fit_transform(df['Equipment_Type'])
+# Ensure 'Equipment_Availability' column is numeric
+data['Equipment_Availability'] = pd.to_numeric(data['Equipment_Availability'], errors='coerce')
 
-    # Prepare features and target
-    X = df.drop(columns=['Equipment_Type'])
-    Y = df['Equipment_Availability']
-    
-    return X, Y
+# Get all unique equipment types
+equipment_types = data['Equipment_Type'].unique()
 
-def train_and_save_model():
-    """Trains and saves the ML model using MongoDB data."""
-    try:
-        X, Y = fetch_data()
-        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+# Dictionary to store predictions
+predictions = {}
 
-        model = RandomForestClassifier()
-        model.fit(X_train, Y_train)
+# Train, save, and predict for each equipment type
+for equipment in equipment_types:
+    equipment_data = data[data['Equipment_Type'] == equipment]
 
-        # Save model
-        joblib.dump(model, MODEL_PATH)
-        print("✅ Model trained and saved successfully!")
-    except Exception as e:
-        print(f"❌ Error training model: {e}")
+    # Check if there's enough data for training
+    if len(equipment_data) < 2:
+        print(f"Skipping {equipment} due to insufficient data.")
+        continue
 
-def load_model():
-    """Loads the saved model or trains a new one if not found."""
-    if os.path.exists(MODEL_PATH):
-        return joblib.load(MODEL_PATH)
-    else:
-        print("⚠️ Model not found, training a new one...")
-        train_and_save_model()
-        return joblib.load(MODEL_PATH)
+    # Create time steps (assuming past stock data is time-sequenced)
+    X = np.array(range(len(equipment_data))).reshape(-1, 1)  # Time steps
+    y = equipment_data['Equipment_Availability'].values  # Availability values
 
-if __name__ == "__main__":
-    train_and_save_model()  # Run this script to train & save the model
+    # Split data into train and test sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Train Linear Regression model
+    linear_model = LinearRegression()
+    linear_model.fit(X_train, y_train)
+
+    # Save the model with a unique name
+    model_filename = f"{equipment.replace(' ', '_').lower()}_model.joblib"
+    joblib.dump(linear_model, model_filename)
+    print(f"Model for {equipment} saved as {model_filename}")
+
+    # Predict the next time step availability
+    next_time_step = np.array([[len(equipment_data)]])
+    predicted_availability = linear_model.predict(next_time_step)[0]
+    predictions[equipment] = predicted_availability
+
+# Print real-time predictions
+print("\nPredicted Equipment Availability for Next Time Step:")
+for equipment, availability in predictions.items():
+    print(f"{equipment}: {availability:.2f}")
+
+print("\nAll models trained, saved, and predictions generated successfully!")

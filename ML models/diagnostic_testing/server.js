@@ -1,10 +1,13 @@
 const express = require("express");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const axios = require("axios");
+const cors = require('cors');
+const { MongoClient } = require("mongodb"); 
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 
 const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
@@ -19,8 +22,11 @@ app.get("/get_all_stock", async (req, res) => {
         const db = client.db(DB_NAME);
         const collection = db.collection(COLLECTION_NAME);
 
+        console.log("Sample");
         // Fetch data
         const allStock = await collection.find({}, { projection: { diagnostic_equipments: 1, stock_available: 1, _id: 0 } }).toArray();
+
+        console.log("All Stock:", allStock);
 
         await client.close();
 
@@ -33,7 +39,6 @@ app.get("/get_all_stock", async (req, res) => {
     }
 });
 
-// Predict future stock for all equipment
 // Predict future stock for all equipment
 app.get("/predict_future_stock", async (req, res) => {
     try {
