@@ -48,13 +48,12 @@ app.get("/fetch-ppe", async (req, res) => {
             sumDecember += PPE_Kits_Available_in_December || 0;
         });
 
-        const averages = {
-            PPE_Kits_Available_in_october: sumOctober / totalEntries,
-            PPE_Kits_Available_in_November: sumNovember / totalEntries,
-            PPE_Kits_Available_in_December: sumDecember / totalEntries
-        };
-
-        res.json({ success: true, averages });
+        // Send the response in the exact format required
+        res.json({
+            PPE_Kits_Available_in_october: Math.round(sumOctober / totalEntries),
+            PPE_Kits_Available_in_November: Math.round(sumNovember / totalEntries),
+            PPE_Kits_Available_in_December: Math.round(sumDecember / totalEntries)
+        });
     } catch (error) {
         console.error("Error fetching PPE data:", error.message);
         res.status(500).json({ error: "Internal server error", details: error.message });
