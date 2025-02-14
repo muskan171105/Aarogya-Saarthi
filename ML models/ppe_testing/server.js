@@ -1,89 +1,51 @@
-const express = require("express");
-const axios = require("axios");
-const { MongoClient } = require("mongodb");
-
-const FLASK_API_URL = "http://127.0.0.1:5000"; // Flask server URL
-const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
-const DB_NAME = "AarogyaSaarthi";
-const COLLECTION_NAME = "PPE";
+const express = require('express');
+const mongoose = require('mongoose');
+const { PythonShell } = require('python-shell');
 
 const app = express();
 app.use(express.json());
 
-// Function to fetch PPE data from MongoDB
-async function fetchPPEData() {
-    const client = new MongoClient(MONGO_URI);
+// MongoDB Connection
+mongoose.connect("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/AarogyaSaarthi", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
 
+const ppeSchema = new mongoose.Schema({}, { strict: false });
+const PPE = mongoose.model("PPE", ppeSchema);
+
+// Fetch PPE Data from MongoDB
+app.get('/fetch_ppe', async (req, res) => {
     try {
-        await client.connect();
-        const db = client.db(DB_NAME);
-        const collection = db.collection(COLLECTION_NAME);
-
-        // Fetch latest PPE data
-        const ppeData = await collection.find().toArray();
-        return ppeData;
-    } catch (error) {
-        console.error("Error fetching data from MongoDB:", error);
-        return null;
-    } finally {
-        await client.close();
+        const data = await PPE.find({}, { _id: 0, PPE_Kits_Available_in_october: 1, PPE_Kits_Available_in_November: 1, PPE_Kits_Available_in_December: 1, PPE_Kits_Available_in_January: 1 });
+        if (!data.length) return res.status(404).json({ message: "No data found" });
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-}
+});
 
-// Fetch PPE Availability with Averages
-app.get("/fetch-ppe", async (req, res) => {
+// Predict Future PPE Based on Dataset
+app.get('/predict_ppe', async (req, res) => {
     try {
-        const ppeData = await fetchPPEData();
-        if (!ppeData || ppeData.length === 0) {
-            return res.status(404).json({ error: "No PPE data available." });
-        }
+        const latestData = await PPE.findOne({}, { _id: 0, no_of_staff: 1, Avg_Monthly_PPE_Consumption: 1, ECLW: 1 });
 
-        // Compute averages
-        let totalEntries = ppeData.length;
-        let sumOctober = 0, sumNovember = 0, sumDecember = 0;
+        if (!latestData) return res.status(404).json({ message: "No valid data found for prediction" });
 
-        ppeData.forEach(({ PPE_Kits_Available_in_october, PPE_Kits_Available_in_November, PPE_Kits_Available_in_December }) => {
-            sumOctober += PPE_Kits_Available_in_october || 0;
-            sumNovember += PPE_Kits_Available_in_November || 0;
-            sumDecember += PPE_Kits_Available_in_December || 0;
+        let options = {
+            mode: 'text',
+            pythonOptions: ['-u'],
+            scriptPath: './',
+            args: [latestData.no_of_staff, latestData.Avg_Monthly_PPE_Consumption, latestData.ECLW]
+        };
+
+        PythonShell.run('predict_ppe.py', options, (err, results) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json(JSON.parse(results[0]));
         });
-
-        // Send the response in the exact format required
-        res.json({
-            PPE_Kits_Available_in_october: Math.round(sumOctober / totalEntries),
-            PPE_Kits_Available_in_November: Math.round(sumNovember / totalEntries),
-            PPE_Kits_Available_in_December: Math.round(sumDecember / totalEntries)
-        });
-    } catch (error) {
-        console.error("Error fetching PPE data:", error.message);
-        res.status(500).json({ error: "Internal server error", details: error.message });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 
-// 🔹 Convert `/predict-ppe` to GET request
-app.get("/predict-ppe", async (req, res) => {
-    try {
-        const ppeData = await fetchPPEData();
-        if (!ppeData || ppeData.length === 0) {
-            return res.status(404).json({ error: "No data found in database." });
-        }
-
-        // Extract features
-        const features = ppeData.map(({ no_of_staff, Avg_Monthly_PPE_Consumption, ECLW }) => 
-            [no_of_staff, Avg_Monthly_PPE_Consumption, ECLW]
-        );
-
-        // 🔹 Send GET request to Flask with query params
-        const response = await axios.get(`${FLASK_API_URL}/predict-ppe`, { params: { features: JSON.stringify(features) } });
-
-        res.json(response.data);
-    } catch (error) {
-        console.error("Error calling Flask API:", error.message);
-        res.status(500).json({ error: "Internal server error", details: error.message });
-    }
-});
-
-const PORT = 3001;
-app.listen(PORT, () => {
-    console.log(`Node.js server running on port ${PORT}`);
-});
+app.listen(3001, () => console.log("Server running on port 3001"));
