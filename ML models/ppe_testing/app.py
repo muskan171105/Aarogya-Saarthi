@@ -53,9 +53,9 @@ def predict_ppe():
 
         response = [
             {
-                "PPE_Kits_Available_in_November": abs(int(pred[0])),
-                "PPE_Kits_Available_in_December": abs(int(pred[1])) + 400,
-                "PPE_Kits_Available_in_January": abs(int(pred[2])) + 400
+                "PPE_Kits_Available_in_March": abs(int(pred[0])),
+                "PPE_Kits_Available_in_April": abs(int(pred[1])) + 400,
+                "PPE_Kits_Available_in_May": abs(int(pred[2])) + 400
             }
             for pred in predictions
         ]
