@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import cron from "node-cron";
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 // MongoDB connection
 mongoose.connect("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/", {
@@ -27,6 +27,31 @@ const Employee = mongoose.model("Staff", EmployeeSchema);
 // Dummy Hospital Bank Account
 let hospitalBankBalance = 100000000; // ₹100M initial balance
 
+// Function to calculate tax based on Indian tax slabs
+const calculateTax = (annualSalary) => {
+  let taxableIncome = Math.max(annualSalary - 50000, 0); // Standard deduction
+  let tax = 0;
+
+  if (taxableIncome <= 250000) {
+    tax = 0;
+  } else if (taxableIncome <= 500000) {
+    tax = (taxableIncome - 250000) * 0.05;
+  } else if (taxableIncome <= 1000000) {
+    tax = (250000 * 0.05) + (taxableIncome - 500000) * 0.20;
+  } else {
+    tax = (250000 * 0.05) + (500000 * 0.20) + (taxableIncome - 1000000) * 0.30;
+  }
+
+  let cess = tax * 0.04; // 4% Cess
+  let totalTax = tax + cess;
+
+  if (annualSalary <= 500000) {
+    return 0; // Rebate under Section 87A
+  }
+
+  return totalTax;
+};
+
 // Function to process salary payments
 const processSalaries = async () => {
   console.log("Processing salaries...");
@@ -37,11 +62,19 @@ const processSalaries = async () => {
     return;
   }
 
-  employees.forEach((employee) => {
-    const monthlySalary = employee.Net_Salary / 12; // Convert annual to monthly salary
-    
+  employees.forEach(async (employee) => {
+    let annualSalary = employee.Salary;
+    let tax = calculateTax(annualSalary);
+    let netAnnualSalary = annualSalary - tax;
+    let monthlySalary = netAnnualSalary / 12;
+
     if (hospitalBankBalance >= monthlySalary) {
       hospitalBankBalance -= monthlySalary;
+      await Employee.updateOne(
+        { emp_id: employee.emp_id },
+        { Net_Salary: netAnnualSalary }
+      );
+
       console.log(
         `Paid ₹${monthlySalary.toFixed(2)} to ${employee.first_name} ${employee.last_name} (Acc: ${employee.bank_account})`
       );
