@@ -1,10 +1,11 @@
 import express from 'express';
+import bodyParser from "body-parser";
 import mongoose from 'mongoose';
 import { PythonShell } from 'python-shell';
 import cors from 'cors';
 
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(cors());
 
 // MongoDB Connection
@@ -17,6 +18,7 @@ const PPE = mongoose.model("PPE", ppeSchema);
 // Fetch PPE Data from MongoDB
 app.get('/fetch_ppe', async (req, res) => {
     try {
+        console.log("hi api");
         const data = await PPE.find({}, { _id: 0, PPE_Kits_Available_in_october: 1, PPE_Kits_Available_in_November: 1, PPE_Kits_Available_in_December: 1, PPE_Kits_Available_in_January: 1 });
         if (!data.length) return res.status(404).json({ message: "No data found" });
         res.json(data);

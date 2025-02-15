@@ -3,8 +3,10 @@ import numpy as np
 import pandas as pd
 import joblib
 from pymongo import MongoClient
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app) # Enable CORS for cross-origin requests
 
 # MongoDB Connection
 client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")

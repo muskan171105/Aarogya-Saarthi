@@ -10,6 +10,7 @@ function PPE() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+      console.log("hi");
       axios.get("http://localhost:3001/fetch_ppe")
           .then(response => {
             console.log("Raw API Response:", response.data);
