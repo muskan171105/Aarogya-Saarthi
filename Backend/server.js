@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 env.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 let db; // Declare a variable to hold the database object
 
 // Middleware
@@ -261,6 +261,19 @@ app.get('/staff', async (req, res)=>{
     res.json(existingPatients);
   } catch (error) {
     console.error('Error fetching patients:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/all_resources', async (req, res)=>{
+  try {
+    const userID = req.userId
+    // Fetch data properly
+    const existingResources = await db.collection('Resources').find({userId: '679a4af819ee2872f4d16825'}).toArray();
+    
+    res.json(existingResources);
+  } catch (error) {
+    console.error('Error fetching Resources:', error.message);
     res.status(500).send('Server error');
   }
 });
