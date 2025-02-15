@@ -53,17 +53,17 @@ function Diagnostic_Equipments() {
         backgroundColor: "#3498db",
       },
       {
-        label: "Predicted Stock (Month 1)",
+        label: "March",
         data: equipmentData.map((item) => item.Predicted_Availability?.[0] || 0),
         backgroundColor: "#ff9800",
       },
       {
-        label: "Predicted Stock (Month 2)",
+        label: "April",
         data: equipmentData.map((item) => item.Predicted_Availability?.[1] || 0),
         backgroundColor: "#4caf50",
       },
       {
-        label: "Predicted Stock (Month 3)",
+        label: "May",
         data: equipmentData.map((item) => item.Predicted_Availability?.[2] || 0),
         backgroundColor: "#e74c3c",
       },
@@ -74,7 +74,7 @@ function Diagnostic_Equipments() {
     responsive: true,
     plugins: {
       legend: { position: "top" },
-      title: { display: true, text: "Diagnostic Equipment Stock Analysis" },
+      title: { display: true, text: "Medical Equipment Stock Analysis" },
     },
     scales: {
       x: { title: { display: true, text: "Equipment Name" } },
@@ -87,7 +87,7 @@ function Diagnostic_Equipments() {
       <SideBar />
       <section className="home-section">
         <div className="home-content">
-          <h2>Diagnostic Equipment Stock Analysis</h2>
+          <h2>Medical Equipment Stock Analysis</h2>
 
           {loading ? (
             <p>Loading data...</p>
@@ -105,9 +105,9 @@ function Diagnostic_Equipments() {
                   <tr>
                     <th>Equipment</th>
                     <th>Current Stock</th>
-                    <th>Predicted Stock (Month 1)</th>
-                    <th>Predicted Stock (Month 2)</th>
-                    <th>Predicted Stock (Month 3)</th>
+                    <th>March</th>
+                    <th>April</th>
+                    <th>May</th>
                   </tr>
                 </thead>
                 <tbody>
