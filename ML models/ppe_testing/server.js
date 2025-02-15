@@ -1,73 +1,53 @@
-const express = require("express");
-const axios = require("axios");
-const { MongoClient } = require("mongodb");
-
-const FLASK_API_URL = "http://127.0.0.1:5001"; // Flask server URL
-const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
-const DB_NAME = "AarogyaSaarthi";
-const COLLECTION_NAME = "PPE";
+import express from 'express';
+import mongoose from 'mongoose';
+import { PythonShell } from 'python-shell';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
-// Function to fetch PPE data from MongoDB
-async function fetchPPEData() {
-    const client = new MongoClient(MONGO_URI);
+// MongoDB Connection
+mongoose.connect('mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/');
 
+
+const ppeSchema = new mongoose.Schema({}, { strict: false });
+const PPE = mongoose.model("PPE", ppeSchema);
+
+// Fetch PPE Data from MongoDB
+app.get('/fetch_ppe', async (req, res) => {
     try {
-        await client.connect();
-        const db = client.db(DB_NAME);
-        const collection = db.collection(COLLECTION_NAME);
-
-        // Fetch latest PPE data
-        const ppeData = await collection.find().toArray();
-        return ppeData;
-    } catch (error) {
-        console.error("Error fetching data from MongoDB:", error);
-        return null;
-    } finally {
-        await client.close();
-    }
-}
-
-// New Route: Fetch PPE Availability for Display
-app.get("/fetch-ppe", async (req, res) => {
-    try {
-        const ppeData = await fetchPPEData();
-        if (!ppeData || ppeData.length === 0) {
-            return res.status(404).json({ error: "No PPE data available." });
-        }
-        res.json({ success: true, data: ppeData });
-    } catch (error) {
-        console.error("Error fetching PPE data:", error.message);
-        res.status(500).json({ error: "Internal server error", details: error.message });
+        const data = await PPE.find({}, { _id: 0, PPE_Kits_Available_in_october: 1, PPE_Kits_Available_in_November: 1, PPE_Kits_Available_in_December: 1, PPE_Kits_Available_in_January: 1 });
+        if (!data.length) return res.status(404).json({ message: "No data found" });
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 
-// Predict PPE stock without client input
-app.post("/predict-ppe", async (req, res) => {
+
+// Predict Future PPE Based on Dataset
+app.get('/predict_ppe', async (req, res) => {
     try {
-        const ppeData = await fetchPPEData();
-        if (!ppeData || ppeData.length === 0) {
-            return res.status(404).json({ error: "No data found in database." });
-        }
+        const latestData = await PPE.findOne({}, { _id: 0, no_of_staff: 1, Avg_Monthly_PPE_Consumption: 1, ECLW: 1 });
 
-        // Extract features
-        const features = ppeData.map(({ no_of_staff, Avg_Monthly_PPE_Consumption, ECLW }) => 
-            [no_of_staff, Avg_Monthly_PPE_Consumption, ECLW]
-        );
+        if (!latestData) return res.status(404).json({ message: "No valid data found for prediction" });
 
-        // 🔹 Send POST request to Flask for prediction
-        const response = await axios.post(`${FLASK_API_URL}/predict-ppe`, { features });
+        let options = {
+            mode: 'text',
+            pythonOptions: ['-u'],
+            scriptPath: './',
+            args: [latestData.no_of_staff, latestData.Avg_Monthly_PPE_Consumption, latestData.ECLW]
+        };
 
-        res.json(response.data);
-    } catch (error) {
-        console.error("Error calling Flask API:", error.message);
-        res.status(500).json({ error: "Internal server error", details: error.message });
+        PythonShell.run('predict_ppe.py', options, (err, results) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json(JSON.parse(results[0]));
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 
-const PORT = 3001;
-app.listen(PORT, () => {
-    console.log(`Node.js server running on port ${PORT}`);
-});
+
+app.listen(3001, () => console.log("Server running on port 3001"));

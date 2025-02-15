@@ -1,66 +1,37 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const axios = require("axios");
-const cors = require('cors');
-const { MongoClient } = require("mongodb"); 
+import express from "express";
+import bodyParser from "body-parser";
+import axios from "axios";
+import cors from "cors";
+import { MongoClient } from "mongodb";
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+// MongoDB Connection
 const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
 const DB_NAME = "AarogyaSaarthi";
-const COLLECTION_NAME = "MedicalEquipments";  // Updated collection name
+const COLLECTION_NAME = "MedicalEquipments";
 
-// Fetch all medical equipment stock from MongoDB
-app.get("/get_all_stock", async (req, res) => {
+// Fetch current stock and predicted stock together
+app.get("/get_stock_with_prediction", async (req, res) => {
     try {
-        const client = new MongoClient(MONGO_URI);
-        await client.connect();
-        const db = client.db(DB_NAME);
-        const collection = db.collection(COLLECTION_NAME);
+        console.log("Fetching current and predicted stock...");
 
-        console.log("Fetching all medical equipment stock...");
-        
-        // Fetch data (Updated field names)
-        const allStock = await collection.find({}, { projection: { Equipment_Type: 1, Equipment_Availability: 1, _id: 0 } }).toArray();
+        // Fetch current stock & predictions from Flask API
+        const response = await axios.post("http://127.0.0.1:5000/get_equipment_availability");
+        const stockData = response.data;
 
-        console.log("All Stock:", allStock);
+        console.log("Fetched Data from Flask:", stockData);
 
-        await client.close();
+        res.json({ equipments: stockData });
 
-        if (!allStock.length) return res.status(404).json({ error: "No medical equipment found" });
-
-        res.json({ equipments: allStock });
     } catch (error) {
-        console.error("Error in /get_all_stock:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error("Error in /get_stock_with_prediction:", error);
+        res.status(500).json({ error: "Internal Server Error", details: error.message });
     }
 });
 
-// Predict future stock for all medical equipment
-app.get("/predict_future_stock", async (req, res) => {
-    try {
-        console.log("Fetching predictions from Flask...");
-
-        // Send request to Flask ML server
-        const response = await axios.post("http://127.0.0.1:5000/predict_future_stock");
-
-        console.log("Flask Response:", response.data); // Debugging log
-
-        if (response.data.error) {
-            return res.status(500).json({ error: "Error from ML model", details: response.data.error });
-        }
-
-        res.json(response.data);
-
-    } catch (error) {
-        console.error("Error in /predict_future_stock:", error);
-
-        // Return the actual error details
-        res.status(500).json({ error: "Error fetching prediction from Flask server", details: error.message });
-    }
-});
-
+// Start the server
 const PORT = 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Node.js server running on port ${PORT}`));
