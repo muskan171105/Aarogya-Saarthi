@@ -1,55 +1,36 @@
-import express from 'express';
-import bodyParser from "body-parser";
-import mongoose from 'mongoose';
-import { PythonShell } from 'python-shell';
-import cors from 'cors';
+import express from "express";
+import axios from "axios";
+import cors from "cors";
 
 const app = express();
-app.use(bodyParser.json());
+const PORT = 3001;
+
 app.use(cors());
 
-// MongoDB Connection
-mongoose.connect('mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/');
+// Flask API Base URL
+const FLASK_API_URL = "http://127.0.0.1:5000"; // Change if Flask runs on a different port
 
-
-const ppeSchema = new mongoose.Schema({}, { strict: false });
-const PPE = mongoose.model("PPE", ppeSchema);
-
-// Fetch PPE Data from MongoDB
-app.get('/fetch_ppe', async (req, res) => {
+// Route to fetch PPE data from Flask API
+app.get("/fetch_ppe", async (req, res) => {
     try {
-        console.log("hi api");
-        const data = await PPE.find({}, { _id: 0, PPE_Kits_Available_in_october: 1, PPE_Kits_Available_in_November: 1, PPE_Kits_Available_in_December: 1, PPE_Kits_Available_in_January: 1 });
-        if (!data.length) return res.status(404).json({ message: "No data found" });
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        const response = await axios.get(`${FLASK_API_URL}/fetch_ppe`);
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching PPE data", details: error.message });
     }
 });
 
-
-// Predict Future PPE Based on Dataset
-app.get('/predict_ppe', async (req, res) => {
+// Route to fetch PPE prediction from Flask API
+app.get("/predict_ppe", async (req, res) => {
     try {
-        const latestData = await PPE.findOne({}, { _id: 0, no_of_staff: 1, Avg_Monthly_PPE_Consumption: 1, ECLW: 1 });
-
-        if (!latestData) return res.status(404).json({ message: "No valid data found for prediction" });
-
-        let options = {
-            mode: 'text',
-            pythonOptions: ['-u'],
-            scriptPath: './',
-            args: [latestData.no_of_staff, latestData.Avg_Monthly_PPE_Consumption, latestData.ECLW]
-        };
-
-        PythonShell.run('predict_ppe.py', options, (err, results) => {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json(JSON.parse(results[0]));
-        });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        const response = await axios.get(`${FLASK_API_URL}/predict_ppe`);
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching PPE prediction", details: error.message });
     }
 });
 
-
-app.listen(3001, () => console.log("Server running on port 3001"));
+// Start the Node server
+app.listen(PORT, () => {
+    console.log(`Node server is running on http://localhost:${PORT}`);
+});
