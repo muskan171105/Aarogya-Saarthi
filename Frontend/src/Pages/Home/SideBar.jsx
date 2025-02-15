@@ -132,7 +132,7 @@ function SideBar(){
               <li><Link to="/ppe_kit_requirement">PPE Kit requirement</Link></li>
               <li><Link to="/diagnostic_equipments">Diagnostic Equipments</Link></li>
               <li><Link to="/prediction"> Medical Equipments</Link></li>
-              <li><Link to="/Blood_Bank">Blood Bank</Link></li>
+              <li><Link to="/bloodbank">Blood Bank</Link></li>
             </ul>
           </li>
           <li>
