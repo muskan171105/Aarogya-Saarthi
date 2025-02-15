@@ -24,29 +24,33 @@ def generate_realistic_variation(base_value):
 @app.route('/predict_future_stock', methods=['POST'])
 def predict_future_stock():
     try:
-        # Fetch all equipment names from MongoDB
+        # Fetch unique equipment names from MongoDB
         all_stock_data = collection.find({}, {"diagnostic_equipments": 1, "_id": 0})
 
+        unique_equipments = set()  # To store unique equipment names
         stock_predictions = {}
 
         for item in all_stock_data:
             equipment_name = item["diagnostic_equipments"]
 
-            # Convert equipment name to match saved model filenames
-            model_filename = f"{equipment_name.replace(' ', '_').lower()}_model.joblib"
-            model_path = os.path.join(MODEL_DIR, model_filename)
+            if equipment_name not in unique_equipments:
+                unique_equipments.add(equipment_name)
 
-            # Check if model exists
-            if os.path.exists(model_path):
-                model = joblib.load(model_path)
-                base_prediction = max(0, int(model.predict([[1]])[0]))
+                # Convert equipment name to match saved model filenames
+                model_filename = f"{equipment_name.replace(' ', '_').lower()}_model.joblib"
+                model_path = os.path.join(MODEL_DIR, model_filename)
 
-                # Generate 3 future predictions with minor variations
-                future_stock = generate_realistic_variation(base_prediction)
+                # Check if model exists
+                if os.path.exists(model_path):
+                    model = joblib.load(model_path)
+                    base_prediction = max(0, int(model.predict([[1]])[0]))
 
-                stock_predictions[equipment_name] = future_stock
-            else:
-                stock_predictions[equipment_name] = "Model not found"
+                    # Generate 3 future predictions with minor variations
+                    future_stock = generate_realistic_variation(base_prediction)
+
+                    stock_predictions[equipment_name] = future_stock
+                else:
+                    stock_predictions[equipment_name] = "Model not found"
 
         return jsonify({"predicted_stock": stock_predictions})
 
