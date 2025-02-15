@@ -45,19 +45,21 @@ function Staff() {
                 <th>Age</th>
                 <th>Date of Employment</th>
                 <th>Phone Number</th>
+                <th>Salary</th>
               </tr>
             </thead>
             <tbody>
               {employeeData.map((employee) => (
                 <tr key={employee.emp_id}>
                   <td>{employee.emp_id}</td>
-                  <td>{employee.f_name}</td>
-                  <td>{employee.l_name}</td>
+                  <td>{employee.first_name}</td>
+                  <td>{employee.last_name}</td>
                   <td>{employee.email}</td>
                   <td>{employee.gender}</td>
                   <td>{employee.age}</td>
-                  <td>{employee.date}</td>
-                  <td>{employee.phone}</td>
+                  <td>{new Date(employee.date_of_employment).toLocaleDateString("en-GB")}</td>
+                  <td>{employee.phone_number}</td>
+                  <td>{employee.Salary.toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
