@@ -45,30 +45,56 @@ function PPE() {
           });
   }, []);
 
-  // const chartData = PEEData.map(item => ({
-  //     month: "October", bed_count: item.PPE_Kits_Available_in_October
-  // })).concat(PEEData.map(item => ({
-  //     month: "November", bed_count: item.PPE_Kits_Available_in_November
-  // }))).concat(PEEData.map(item => ({
-  //     month: "December", bed_count: item.PPE_Kits_Available_in_December
-  // }))).concat(PEEData.map(item => ({
-  //     month: "January", bed_count: item.PPE_Kits_Available_in_January
-  // }))).concat(PEEData.map(item => ({
-  //     month: "February", bed_count: item.PPE_Kits_Available_in_February
-  // }))).concat(
-  //     ["March", "April", "May"].map(month => ({
-  //         month,
-  //         bed_count: 0,
-  //         predicted_bed_count: predictedData[month] || 0
-  //     }))
-  // );
+  const monthMapping = {
+    PPE_Kits_Available_in_october: "November",
+    PPE_Kits_Available_in_November: "December",
+    PPE_Kits_Available_in_December: "January",
+    PPE_Kits_Available_in_January: "February",
+    April: "May",
+    March: "April",
+    February: "March"
+};
 
-  const chartData = PEEData.map(item => ({
-    month: item.month,
-    available_kits: item.PPE_Kits_Available || 0
-  }));
+const combinedData = {};
 
-  console.log("Chart Data:", chartData);
+  // Add Actual Data (PEEData)
+  PEEData.forEach(item => {
+      const monthName = monthMapping[item.month] || item.month;
+      combinedData[monthName] = {
+          month: monthName,
+          available_kits: item.PPE_Kits_Available || 0,
+          predicted_kits: 0 // Default 0 for predicted if not available
+      };
+  });
+
+  // Add Predicted Data
+  Object.entries(predictedData).forEach(([month, value]) => {
+      const monthName = monthMapping[month] || month;
+      if (!combinedData[monthName]) {
+          combinedData[monthName] = {
+              month: monthName,
+              available_kits: 0, // Default 0 for actual if not available
+              predicted_kits: value
+          };
+      } else {
+          combinedData[monthName].predicted_kits = value;
+      }
+  });
+  // Convert to Array for Recharts
+  const chartData = Object.values(combinedData);
+
+  const monthOrder = [
+    "November", "December", "January", "February", 
+    "March", "April", "May"
+  ];
+  
+  // Sort chartData based on monthOrder
+  const sortedChartData = chartData.sort((a, b) => {
+    return monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month);
+  });
+
+  console.log("Sorted Chart Data:", sortedChartData);
+  
   return (
     <div className="Home">
       <SideBar />
@@ -83,35 +109,36 @@ function PPE() {
             <>
                {/* Bar Chart */}
                <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={chartData}>
+                <BarChart data={sortedChartData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Bar dataKey="available_kits" fill="#3498db" />
+                  <Bar dataKey="available_kits" fill="#3498db" name="Actual PPE Kits" />
+                  <Bar dataKey="predicted_kits" fill="#e74c3c" name="Predicted PPE Kits" />
                 </BarChart>
               </ResponsiveContainer>
 
               {/* Actual Bed Count Table */}
-              <h2 className="text-xl font-semibold mt-6">Current Bed Count (October - February)</h2>
+              <h2 className="text-xl font-semibold mt-6">Current PPE Kit Count (November - February)</h2>
               <table className="w-full mt-4 border border-gray-300">
                 <thead>
                   <tr className="bg-gray-100">
                     <th className="p-2 border">Month</th>
-                    <th className="p-2 border">Actual Bed Count</th>
+                    <th className="p-2 border">Actual PPE Kit Count</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {chartData.slice(0, 5).map((item, index) => (
+                  {sortedChartData.slice(0, 4).map((item, index) => (
                     <tr key={index} className="border-t">
                       <td className="p-2 border">{item.month}</td>
-                      <td className="p-2 border">{item.bed_count}</td>
+                      <td className="p-2 border">{item.available_kits}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               {/* Predicted Bed Count Table */}
-              <h2 className="text-xl font-semibold mt-6">Predicted Bed Requirement (March - May)</h2>
+              <h2 className="text-xl font-semibold mt-6">Predicted PPE Kit Requirement (March - May)</h2>
               <table className="w-full mt-4 border border-gray-300">
                 <thead>
                   <tr className="bg-gray-100">
@@ -120,10 +147,10 @@ function PPE() {
                   </tr>
                 </thead>
                 <tbody>
-                  {["March", "April", "May"].map((month, index) => (
+                  {sortedChartData.slice(4, 7).map((item, index) => (
                     <tr key={index} className="border-t">
-                      <td className="p-2 border">{month}</td>
-                      <td className="p-2 border">{predictedData[month] || "Loading..."}</td>
+                      <td className="p-2 border">{item.month}</td>
+                      <td className="p-2 border">{item.predicted_kits || "Loading..."}</td>
                     </tr>
                   ))}
                 </tbody>

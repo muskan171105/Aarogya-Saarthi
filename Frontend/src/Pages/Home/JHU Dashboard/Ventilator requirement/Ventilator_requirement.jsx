@@ -58,12 +58,12 @@ function Ventilator() {
                             </ResponsiveContainer>
 
                             {/* Current Bed Count Table */}
-                            <h2 className="text-xl font-semibold mt-6">Current Bed Count (October - February)</h2>
+                            <h2 className="text-xl font-semibold mt-6">Current Ventilator Count (October - February)</h2>
                             <table className="w-full mt-4 border border-gray-300">
                                 <thead>
                                     <tr className="bg-gray-100">
                                         <th className="p-2 border">Month</th>
-                                        <th className="p-2 border">Actual Bed Count</th>
+                                        <th className="p-2 border">Actual Ventilator Count</th>
                                     </tr>
                                 </thead>
                                 <tbody>
