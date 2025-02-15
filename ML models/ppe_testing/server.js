@@ -1,15 +1,15 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const { PythonShell } = require('python-shell');
+import express from 'express';
+import mongoose from 'mongoose';
+import { PythonShell } from 'python-shell';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // MongoDB Connection
-mongoose.connect("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/AarogyaSaarthi", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+mongoose.connect('mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/');
+
 
 const ppeSchema = new mongoose.Schema({}, { strict: false });
 const PPE = mongoose.model("PPE", ppeSchema);
@@ -24,6 +24,7 @@ app.get('/fetch_ppe', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 // Predict Future PPE Based on Dataset
 app.get('/predict_ppe', async (req, res) => {
@@ -47,5 +48,6 @@ app.get('/predict_ppe', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 app.listen(3001, () => console.log("Server running on port 3001"));

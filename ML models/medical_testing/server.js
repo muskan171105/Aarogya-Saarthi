@@ -1,8 +1,8 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const axios = require("axios");
-const cors = require("cors");
-const { MongoClient } = require("mongodb");
+import express from "express";
+import bodyParser from "body-parser";
+import axios from "axios";
+import cors from "cors";
+import { MongoClient } from "mongodb";
 
 const app = express();
 app.use(bodyParser.json());
