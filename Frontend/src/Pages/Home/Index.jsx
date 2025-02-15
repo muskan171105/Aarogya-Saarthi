@@ -2,6 +2,7 @@ import {useState} from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import "./Index.css";
+import {Link} from "react-router-dom"
 
 function Home() {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ function Home() {
     user: "",
     password: "",
   });
+
+const [check, setCheck] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,6 +38,9 @@ function Home() {
     }
   }
 
+const HandleCheck = () => {
+  setCheck(!check);
+}
   return (
     <div className="login-page">
       <div id="whitebox">
@@ -48,10 +54,10 @@ function Home() {
             <input type="text" className="input-field" placeholder="User id" required name="user" value={formData.user} onChange={handleChange}/>
             <input type="password" className="input-field" placeholder="Enter Password" required name="password" value={formData.password} onChange={handleChange}/>
             <div className="checkbox-container">
-              <input type="checkbox" className="check-box" id="remember" />
-              <label htmlFor="remember">Remember Password</label>
+              <input type="checkbox" className="check-box" id="remember" name="checkbox" onClick={HandleCheck}/>
+              <Link to="/policy" style={{color: 'black'}}>Term and Conditions</Link>
             </div>
-            <button type="submit" className="submit-btn" onClick={HandleClick}>Log In</button>
+            <button type="submit" className="submit-btn" onClick={HandleClick} disabled={check === false}>Log In</button>
             {error && <p style={{ color: 'red' }}>{error}</p>}
           </form>
         </div>

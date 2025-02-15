@@ -10,7 +10,7 @@ function AboutPage() {
             <img src="src/assets/logo.png" alt="Hriday Tarni Logo" />
           </Link>
         </div>
-        <div className="nav-menu">
+        <div className="nav-menu" id="navlenght">
           <div className="menu">
             <Link to="/">Home</Link>
             <Link to="/about">About</Link>

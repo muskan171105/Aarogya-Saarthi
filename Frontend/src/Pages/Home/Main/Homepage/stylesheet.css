@@ -54,7 +54,7 @@
     }
 
     .menu{
-        width: 200%;
+        width: 100%;
     }
 
     .menu a:before{
@@ -123,6 +123,7 @@
         font-size: 100px;
     }
 
+    
 
 
 
@@ -163,5 +164,15 @@
         font-size: 45px; /* Make it more prominent */
         white-space: nowrap; /* Prevents breaking into new lines */
         margin-top: 10px;
+    }
+    
+
+
+
+
+
+
+    #navlenght{
+        width: 500px;
     }
     
