@@ -1,6 +1,4 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import axios from 'axios';
-import { useEffect } from 'react';
 import Home from './Pages/Home/Index';
 import Dashboard from './Pages/Home/JHU Dashboard/Dashboard/Dashboard';
 import Staff from './Pages/Home/JHU Dashboard/Staff/Staff';
@@ -16,6 +14,7 @@ import Ventilator from './Pages/Home/JHU Dashboard/Ventilator requirement/Ventil
 import PPE from './Pages/Home/JHU Dashboard/PPE Kit requirement/PPEKit_requirement';
 import Diagnostic_Equipments from './Pages/Home/JHU Dashboard/Diagnostic Equipments/Diagnostic_Equipments';
 import Beds_requirement from './Pages/Home/JHU Dashboard/Beds requirement/Beds_requirement';
+import BloodBank from './Pages/Home/JHU Dashboard/Blood Bank/Blood_Bank';
 
 function App() {
   
@@ -37,6 +36,7 @@ function App() {
         <Route path="/ppe_kit_requirement" element={<PPE />} />
         <Route path="/diagnostic_equipments" element={<Diagnostic_Equipments />} />
         <Route path="/beds_requirement" element={<Beds_requirement />} />
+        <Route path="/bloodbank" element={<BloodBank />} />
         <Route path="*" element={<Navigate to="/" />} />
         
       </Routes> 
