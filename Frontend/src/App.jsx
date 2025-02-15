@@ -15,13 +15,17 @@ import Diagnostic_Equipments from './Pages/Home/JHU Dashboard/Diagnostic Equipme
 import Beds_requirement from './Pages/Home/JHU Dashboard/Beds requirement/Beds_requirement';
 import BloodBank from './Pages/Home/JHU Dashboard/Blood Bank/Blood_Bank';
 import Resources from './Pages/Home/JHU Dashboard/Currently available/currently_available';
+import Home_page from './Pages/Home/Main/HomePage/Home_page';
+import About_Page from './Pages/Home/Main/About_page/About_Page';
+import ContactUs from './Pages/Home/Main/Contact us/Contactus_page';
+import Services from './Pages/Home/Main/Services_page/Services';
 
 function App() {
   
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/add_staff" element={<AddStaff />} />
         <Route path="/add_patient" element={<Add_patients />} />
@@ -37,6 +41,10 @@ function App() {
         <Route path="/diagnostic_equipments" element={<Diagnostic_Equipments />} />
         <Route path="/beds_requirement" element={<Beds_requirement />} />
         <Route path="/bloodbank" element={<BloodBank />} />
+        <Route path="/" element={<Home_page />} />
+        <Route path="/about" element={<About_Page />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/services" element={<Services />} />
         <Route path="*" element={<Navigate to="/" />} />
         
       </Routes> 

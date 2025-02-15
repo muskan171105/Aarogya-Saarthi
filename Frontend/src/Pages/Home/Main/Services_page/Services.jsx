@@ -1,6 +1,7 @@
 import "./stylesheet.css";
+import { Link } from "react-router-dom";
 
-function Home() {
+function Services() {
   return (
     <div className="background-image">
       <nav>
@@ -11,14 +12,14 @@ function Home() {
         </div>
         <div className="nav-menu">
           <div className="menu">
-            <a href="../Homepage/Home_page.jsx">Home</a>
-            <a href="../About_Page/About_Page.jsx">About</a>
-            <a href="./Services.jsx">Services</a>
-            <a href="../Contact us/Contactus_page.jsx">Contact Us</a>
+          <Link to="/">Home</Link>
+            <Link to="/about"> About</Link>
+            <Link to="/services" >Services</Link>
+            <Link to="/contact">Contact Us</Link>
           </div>
         </div>
         <div className="register">
-          <a href="#">Login</a>
+          <Link to="/login">Login</Link>
         </div>
       </nav>
       <div className="Heart">
@@ -64,4 +65,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Services;

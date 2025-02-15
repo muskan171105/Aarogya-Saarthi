@@ -1,4 +1,5 @@
 import "./stylesheet.css";
+import { Link } from "react-router-dom";
 
 function ContactUs() {
   return (
@@ -11,14 +12,14 @@ function ContactUs() {
         </div>
         <div className="nav-menu">
           <div className="menu">
-            <a href="../Homepage/Home_page.jsx">Home</a>
-            <a href="../About_Page/About_Page.jsx">About</a>
-            <a href="../Services_page/Services.jsx">Services</a>
-            <a href="./Contactus_page.jsx">Contact Us</a>
+          <Link to="/">Home</Link>
+            <Link to="/about"> About</Link>
+            <Link to="/services" >Services</Link>
+            <Link to="/contact">Contact Us</Link>
           </div>
         </div>
         <div className="register">
-          <a href="#">Login</a>
+        <Link to="/login">Login</Link>
         </div>
       </nav>
       
