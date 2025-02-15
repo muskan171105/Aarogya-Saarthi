@@ -7,7 +7,6 @@ import Add_patients from './Pages/Home/JHU Dashboard/Add patients/Add_patients';
 import Add_resources from './Pages/Home/JHU Dashboard/Add resources/Add_resources';
 import CurrentPatients from './Pages/Home/JHU Dashboard/Current patients/current_patients';
 import PastPatient from './Pages/Home/JHU Dashboard/Past patients/Past_patients';
-import Resources from './Pages/Home/JHU Dashboard/Currently available/currently_available';
 import Prediction from './Pages/Home/JHU Dashboard/Prediction/Prediction';
 import Workload from './Pages/Home/JHU Dashboard/Workload/Workload';
 import Ventilator from './Pages/Home/JHU Dashboard/Ventilator requirement/Ventilator_requirement';
@@ -15,6 +14,7 @@ import PPE from './Pages/Home/JHU Dashboard/PPE Kit requirement/PPEKit_requireme
 import Diagnostic_Equipments from './Pages/Home/JHU Dashboard/Diagnostic Equipments/Diagnostic_Equipments';
 import Beds_requirement from './Pages/Home/JHU Dashboard/Beds requirement/Beds_requirement';
 import BloodBank from './Pages/Home/JHU Dashboard/Blood Bank/Blood_Bank';
+import Resources from './Pages/Home/JHU Dashboard/Currently available/currently_available';
 
 function App() {
   
@@ -29,7 +29,7 @@ function App() {
         <Route path="/patients" element={<CurrentPatients />} />
         <Route path="/past_patients" element={<PastPatient />} />
         <Route path="/staff" element={<Staff />} />
-        <Route path="/resources" element={<Resources />} />
+        <Route path="/resources" element={<Resources/>} />
         <Route path="/prediction" element={<Prediction />} />
         <Route path="/workload" element={<Workload />} />
         <Route path="/ventilator_requirements" element={<Ventilator />} />

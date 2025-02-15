@@ -141,12 +141,6 @@ function SideBar(){
               <span className="link_name">Workload</span>
             </Link>
           </li>
-          <li>
-            <Link to="/Salary_payments">
-              <i className='bx bxs-briefcase'></i>
-              <span className="link_name">Salary payments</span>
-            </Link>
-          </li>
         </ul>
         
         <div className="logout">
