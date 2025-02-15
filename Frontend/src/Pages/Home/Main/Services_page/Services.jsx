@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Services() {
   return (
-    <div className="background-image">
+    <div className="background-image" style={{overflow:'scroll'}}>
       <nav>
         <div className="logo">
         <a href="../Homepage/Home_page.jsx">
@@ -25,7 +25,7 @@ function Services() {
       <div className="Heart">
         <h1>Our Services</h1>
       </div>
-      <div className="redbox">
+      <div className="redbox" id="redbox1">
         <div className="service-card">
           <img src="../src/assets/Photo one.jpg" className="service-icon" alt="AI-Driven Insights" />
           <div className="service-content">

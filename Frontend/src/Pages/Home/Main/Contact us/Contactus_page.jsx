@@ -1,9 +1,13 @@
 import "./stylesheet.css";
 import { Link } from "react-router-dom";
+import bgImage from "../../../../assets/medical-care.png"
 
 function ContactUs() {
+  const HandleClick = () =>{
+    alert("Thank you for contacting us! We will get back to you soon.")
+  }
   return (
-    <div className="background-image">
+    <div className="background-image" style={{overflow:'scroll', backgroundImage: `linear-gradient(rgba(75, 73, 73, 0.893), rgba(255, 255, 255, 0.121)), url(${bgImage})`}} >
       <nav>
         <div className="logo">
           <a href="../Homepage/Home_page.jsx">
@@ -27,7 +31,7 @@ function ContactUs() {
         <h1>Contact Us</h1>
       </div>
 
-      <div className="redbox">
+      <div className="redbox"  id="redbox2">
         <div className="contact-form">
           <h2>Get in Touch</h2>
           <form>
@@ -40,7 +44,7 @@ function ContactUs() {
             <label htmlFor="message">Message</label>
             <textarea id="message" name="message" rows="5" placeholder="Write your message here..." required></textarea>
 
-            <button type="submit">Submit</button>
+            <button type="submit" onClick={HandleClick}>Submit</button>
           </form>
         </div>
       </div>

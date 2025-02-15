@@ -19,7 +19,7 @@ nav{
     background: transparent;
     color: rgb(255, 255, 255);
     display: flex;
-    justify-content: spacearound;
+    justify-content: space-around;
     align-items: center;
 }
 
@@ -118,6 +118,7 @@ nav{
 .Heart1{
     float: right;
     height: 300px;
+    margin-top: 30px;
 }
 
 #Heart1 {
@@ -174,10 +175,12 @@ nav{
     margin-top: 30px;
     font-size: 40px;
     color: rgb(211, 80, 57);
+    display: flex;
+    justify-content: center;
 }
 
 
-members{
+.members{
     display: flex;
     height: 250px;
     margin-left: 20px;
@@ -193,7 +196,7 @@ members{
     width: 217px;
 }
 
-name{
+.name{
     display: flex;
     height: 250px;
     margin-top: 10px;
@@ -240,7 +243,7 @@ span{
 
 
 
-name {
+.name {
     display: flex;
     justify-content: center;  /* Centers the name and position horizontally */
     align-items: center;      /* Vertically aligns the items in the center */
@@ -254,9 +257,28 @@ name {
     font-size: 18px;          /* Smaller font size to fit better */
 }
 
-span {
-    font-size: 15px;          /* Slightly smaller font for position */
-    display: block;           /* Ensures position appears below the name */
-    text-align: center;
+.name-section{
+    display: flex; 
+    flex-wrap: wrap;
 }
+
+.redbox{
+    min-height: 230%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
