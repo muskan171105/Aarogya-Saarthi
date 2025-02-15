@@ -28,29 +28,47 @@ function Resources() {
       <SideBar />
       <section className="home-section">
         <div className="home-content">
-          <i className='bx bx-menu'></i>
         </div>
 
         {/* Patient Table */}
         <div className="table-container">
-          <h2>Patient Records</h2>
+          <h2>Resources Available</h2>
           <table>
             <thead>
               <tr>
-                <th>Patient ID</th>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Gender</th>
-                <th>Blood Type</th>
-                <th>Medical Condition</th>
-                <th>Date of Admission</th>
-                <th>Doctor</th>
-                <th>Insurance Provider</th>
-                <th>Room Number</th>
-                <th>Admission Type</th>
-                <th>Medication</th>
-                <th>Test Results</th>
-                <th>Room Type</th>
+                <th>ECG Machine</th>
+                <th>Pulse Oximeter</th>
+                <th>Thermometers</th>
+                <th>BP monitors</th>
+                <th>Electrocardiography</th>
+                <th>Opthalmoscopes</th>
+                <th>Otoscopes</th>
+                <th>Bedside Monitors</th>
+                <th>Dopplers</th>
+                <th>Centrifuge</th>
+                <th>Incubator</th>
+                <th>Scales</th>
+                <th>Binocular Loupes</th>
+                <th>Diagnostic Sets</th>
+                <th>Imagung Equipment</th>
+                <th>Stethoscopes</th>
+                <th>CT Scan machines</th>
+                <th>MRI Machines</th>
+                <th>Laboratory Analyzers</th>
+                <th>Ultrasound Machines</th>
+                <th>ESR Analyzer</th>
+                <th>X-Ray Machines</th>
+                <th>Forceps</th>
+                <th>Retractors</th>
+                <th>Scissors</th>
+                <th>Dissecting forceps</th>
+                <th>Surgical scissors</th>
+                <th>Needle holders</th>
+                <th>Surgical hooks</th>
+                <th>Surgical retractors</th>
+                <th>Clamps</th>
+                <th>Suction</th>
+                <th>Hemostats</th>
               </tr>
             </thead>
             <tbody>

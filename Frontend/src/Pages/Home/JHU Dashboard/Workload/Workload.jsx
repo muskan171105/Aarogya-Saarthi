@@ -25,7 +25,6 @@ function Workload() {
       <SideBar />
       <section className="home-section">
         <div className="home-content">
-          <i className='bx bx-menu'></i>
           <h2>Patient Priority List</h2>
 
           {loading && <p>Loading patient data...</p>}

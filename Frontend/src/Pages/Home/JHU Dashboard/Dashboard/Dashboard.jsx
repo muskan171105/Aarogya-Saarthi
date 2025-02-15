@@ -7,13 +7,9 @@ function Dashboard() {
       <SideBar />
 
       <section className="home-section">
-        <div className="home-content">
-          <i className='bx bx-menu'></i>
-        </div>
-        <div className="welcome-message">
+        <div className="Hello">
           <h1>
-            <span>Welcome to</span>
-            <span className="highlight">Aarogya Saarthi</span>
+            <p>Welcome to <br/>Aarogya Saarthi</p>
           </h1>
         </div>
       </section>

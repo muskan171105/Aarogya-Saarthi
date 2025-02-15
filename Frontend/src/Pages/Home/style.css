@@ -565,7 +565,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    z-index: 10;
+    z-index: 100;
   }
   
   .welcome-message h1 {
@@ -680,13 +680,59 @@ tr:hover {
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   overflow-x: auto; /* Add horizontal scrolling */
-  max-height: 70vh;  /* Optional: Set a maximum height */
+  max-height: 92vh;  /* Optional: Set a maximum height */
+}
+
+.recharts-y-axis .recharts-text {
+  fill: black !important;
+  font-size: 12px;
+}
+
+
+#name,#medical_condition,#medication,#test_results{
+  height: 40px;
+  width: 755px;
+}
+
+
+/* For WebKit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px; /* Adjust width for vertical scrollbar */
+  height: 6px; /* Adjust height for horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Scrollbar handle color */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Handle color on hover */
 }
 
 
 
 
-.recharts-y-axis .recharts-text {
-  fill: black !important;
-  font-size: 12px;
+
+
+
+
+
+
+
+
+.Hello{
+  font-size: 90px;
+  text-align: center;
+  margin-top: 150px;
+  background-clip: text;
+  background: linear-gradient(45deg, #00aaff, #ff00aa);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

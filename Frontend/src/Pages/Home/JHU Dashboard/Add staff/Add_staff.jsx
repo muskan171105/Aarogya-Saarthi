@@ -72,7 +72,6 @@ function AddStaff() {
 
       <section className="home-section">
         <div className="home-content">
-          <i className='bx bx-menu'></i>
         </div>
 
         <div className="form-container">

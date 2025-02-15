@@ -27,15 +27,14 @@ function Staff() {
     <div className="Home">
       <SideBar />
 
-      <section className="home-section">
+      <section className="home-section" >
         <div className="home-content">
-          <i className='bx bx-menu'></i>
         </div>
 
         {/* Employee Table */}
         <div className="table-container">
           <h2>Employee Records</h2>
-          <table>
+          <table id="table_height">
             <thead>
               <tr>
                 <th>Employee ID</th>
