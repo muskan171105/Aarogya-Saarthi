@@ -265,6 +265,19 @@ app.get('/staff', async (req, res)=>{
   }
 });
 
+app.get('/all_resources', async (req, res)=>{
+  try {
+    const userID = req.userId
+    // Fetch data properly
+    const existingResources = await db.collection('Resources').find({userId: '679a4af819ee2872f4d16825'}).toArray();
+    
+    res.json(existingResources);
+  } catch (error) {
+    console.error('Error fetching Resources:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
 app.get('/auth', authenticateToken, (req, res) => {
   res.status(200).json({ message: 'Authenticated' });
 });

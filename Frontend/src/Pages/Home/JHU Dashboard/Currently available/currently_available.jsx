@@ -5,15 +5,15 @@ import axios from "axios";
 
 function Resources() {
 
-  const [patientRecords, setpatientRecords] = useState([]);
+  const [ResourcesRecords, setResourcesRecords] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     // Fetch users from the server
     axios
-      .get("http://localhost:3000/patients")
+      .get("http://localhost:3000/all_resources")
       .then((response) => {
-        setpatientRecords(response.data);
+        setResourcesRecords(response.data);
         setError(null);
       })
       .catch((error) => {
@@ -22,7 +22,7 @@ function Resources() {
       });
   }, []);
 
-
+  console.log(ResourcesRecords);
   return (
     <div className="Home">
       <SideBar />
@@ -72,22 +72,42 @@ function Resources() {
               </tr>
             </thead>
             <tbody>
-              {patientRecords.map((patient) => (
-                <tr key={patient.Patient}>
-                  <td>{patient['Patient ID']}</td>
-                  <td>{patient.Name}</td>
-                  <td>{patient.Age}</td>
-                  <td>{patient.Gender}</td>
-                  <td>{patient['Blood Type']}</td>
-                  <td>{patient['Medical Condition']}</td>
-                  <td>{patient['Date of Admission']}</td>
-                  <td>{patient.doctor}</td>
-                  <td>{patient['Insurance Provider']}</td>
-                  <td>{patient['Room Number']}</td>
-                  <td>{patient['Admission Type']}</td>
-                  <td>{patient['Medication']}</td>
-                  <td>{patient['Test Results']}</td>
-                  <td>{patient['Room type']}</td>
+              {ResourcesRecords.map((resources) => (
+                <tr key={resources._id}>
+                  <td>{resources['ECG Machine']}</td>
+                  <td>{resources['Pulse Oximeter']}</td>
+                  <td>{resources['Thermometers']}</td>
+                  <td>{resources['Blood Pressure monitors']}</td>
+                  <td>{resources['Electrocardiography']}</td>
+                  <td>{resources['Opthalmoscopes']}</td>
+                  <td>{resources['Otoscopes']}</td>
+                  <td>{resources['Bedside Monitors']}</td>
+                  <td>{resources['Dopplers']}</td>
+                  <td>{resources['Centrifuge']}</td>
+                  <td>{resources['Incubator']}</td>
+                  <td>{resources['Scales']}</td>
+                  <td>{resources['Binocular Loupes']}</td>
+                  <td>{resources['Diagnostic Sets']}</td>
+                  <td>{resources['Imagung Equipment']}</td>
+                  <td>{resources['Stethoscopes']}</td>
+                  <td>{resources['CT Scan machines']}</td>
+                  <td>{resources['MRI Machines']}</td>
+                  <td>{resources['Laboratory Analyzers']}</td>
+                  <td>{resources['Ultrasound Machines']}</td>
+                  <td>{resources['ESR Analyzer']}</td>
+                  <td>{resources['X-Ray Machines']}</td>
+                  <td>{resources['Forceps']}</td>
+                  <td>{resources['Retractors']}</td>
+                  <td>{resources['Scissors']}</td>
+                  <td>{resources['Dissecting forceps']}</td>
+                  <td>{resources['Surgical scissors']}</td>
+                  <td>{resources['Needle holders']}</td>
+                  <td>{resources['Surgical hooks']}</td>
+                  <td>{resources['Surgical retractors']}</td>
+                  <td>{resources['Clamps']}</td>
+                  <td>{resources['Suction']}</td>
+                  <td>{resources['Hemostats']}</td>
+
                 </tr>
               ))}
             </tbody>
