@@ -282,6 +282,9 @@ app.get('/auth', authenticateToken, (req, res) => {
   res.status(200).json({ message: 'Authenticated' });
 });
 
+app.get("/", (req, res) => {
+  res.send("Hello, Render!");
+});
 
 // Start the server
 app.listen(PORT, () => {
