@@ -1,8 +1,11 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 from pymongo import MongoClient
-import json
 
 app = Flask(__name__)
+
+# Enable CORS
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # MongoDB Connection
 client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")
@@ -27,12 +30,12 @@ def get_blood_data():
         {
             "$group": {
                 "_id": "$Types of blood",
-                "October": {"$sum": {"$toInt": "$October"}},
-                "November": {"$sum": {"$toInt": "$November"}},
-                "December": {"$sum": {"$toInt": "$December"}},
-                "January": {"$sum": {"$toInt": "$January"}},
-                "February": {"$sum": {"$toInt": "$February"}},
-                "15 Days Requirement": {"$sum": {"$toInt": "$Output"}}
+                "October": {"$sum": {"$toDouble": "$October"}},  # Use "$toDouble" to keep decimals
+                "November": {"$sum": {"$toDouble": "$November"}},
+                "December": {"$sum": {"$toDouble": "$December"}},
+                "January": {"$sum": {"$toDouble": "$January"}},
+                "February": {"$sum": {"$toDouble": "$February"}},
+                "15 Days Requirement": {"$sum": {"$toDouble": "$Output"}}
             }
         },
         {
@@ -53,12 +56,12 @@ def get_blood_data():
 
     result = []
     for doc in raw_data:
-        blood_type = blood_type_map.get(doc["_id"])  # 🔍 Only add if blood type exists
+        blood_type = blood_type_map.get(doc["_id"])
 
-        if blood_type:  # ✅ Exclude unknown blood types
+        if blood_type:
             result.append({
                 "Blood Type": blood_type,
-                "15 Days Requirement": doc.get("15 Days Requirement", 0),
+                "15 Days Requirement": doc.get("15 Days Requirement", 0),  # No rounding
                 "Data": {
                     "October": doc.get("October", 0),
                     "November": doc.get("November", 0),
@@ -68,7 +71,10 @@ def get_blood_data():
                 }
             })
 
+    # 🔹 Sort in decreasing order based on "15 Days Requirement"
+    result.sort(key=lambda x: x["15 Days Requirement"], reverse=True)
+
     return jsonify(result)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
