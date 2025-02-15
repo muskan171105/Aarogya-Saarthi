@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 env.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 let db; // Declare a variable to hold the database object
 
 // Middleware
