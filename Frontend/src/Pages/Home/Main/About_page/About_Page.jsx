@@ -77,7 +77,7 @@ function AboutPage() {
           <h1 className="name">Sparsh Sahni<br /></h1>
           <h1 className="name">Pragalbh Sharma<br /></h1>
           <h1 className="name">Shorya Pathak<br /></h1>
-          <h1 className="name">Prarabhd Soni<br /></h1>
+          <h1 className="name">Prarabdh Soni<br /></h1>
         </div>
       </div>
       <div className="footer">
