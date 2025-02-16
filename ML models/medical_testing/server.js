@@ -19,7 +19,7 @@ app.get("/get_stock_with_prediction", async (req, res) => {
         console.log("Fetching current and predicted stock...");
 
         // Fetch current stock & predictions from Flask API
-        const response = await axios.post("http://127.0.0.1:5000/get_equipment_availability");
+        const response = await axios.post("https://jhu-techlions-medicalequipments.onrender.com/get_equipment_availability");
         const stockData = response.data;
 
         console.log("Fetched Data from Flask:", stockData);

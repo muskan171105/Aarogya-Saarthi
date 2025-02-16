@@ -55,7 +55,7 @@ app.get("/predict_future_stock", async (req, res) => {
         console.log("Fetching predictions from Flask...");
 
         // Send request to Flask ML server
-        const response = await axios.post("http://127.0.0.1:5000/predict_future_stock");
+        const response = await axios.post("https://jhu-techlions-diagnostic-equipments.onrender.com/predict_future_stock");
 
         console.log("Flask Response:", response.data);
 

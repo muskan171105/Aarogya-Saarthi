@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const FLASK_API_URL = 'http://127.0.0.1:5000';
+const FLASK_API_URL = 'https://jhu-techlions-bed-testing.onrender.com';
 const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
 const DB_NAME = "AarogyaSaarthi";
 const COLLECTION_NAME = "Bed";
