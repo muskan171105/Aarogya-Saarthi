@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import axios from "axios";
 import cors from "cors";
 import { MongoClient } from "mongodb";
-require("dotenv").config();
+import "dotenv/config";
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
