@@ -1,9 +1,8 @@
 import express from "express";
 import axios from "axios";
 import cors from "cors";
-
+require("dotenv").config();
 const app = express();
-const PORT = 3001;
 
 app.use(cors());
 
@@ -30,7 +29,11 @@ app.get("/predict_ppe", async (req, res) => {
     }
 });
 
-// Start the Node server
+app.get("/", (req, res) => {
+    res.send("PPE, Render!");
+  });
+
+const PORT = process.env.PORT || 3001; // Use environment port or fallback to 3001
 app.listen(PORT, () => {
-    console.log(`Node server is running on http://localhost:${PORT}`);
+    console.log(`Node.js server running on port ${PORT}`);
 });

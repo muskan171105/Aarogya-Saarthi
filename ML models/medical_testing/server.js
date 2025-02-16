@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import axios from "axios";
 import cors from "cors";
 import { MongoClient } from "mongodb";
-
+require("dotenv").config();
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
@@ -32,6 +32,10 @@ app.get("/get_stock_with_prediction", async (req, res) => {
     }
 });
 
+app.get("/", (req, res) => {
+    res.send("Medical, Render!");
+  });
+
 // Start the server
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Node.js server running on port ${PORT}`));

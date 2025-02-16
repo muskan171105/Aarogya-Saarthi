@@ -15,6 +15,10 @@ app.get("/patients", async (req, res) => {
     }
 });
 
+app.get("/", (req, res) => {
+    res.send("AI, Render!");
+  });
+
 const PORT = process.env.PORT || 3001; // Use environment port or fallback to 3001
 app.listen(PORT, () => {
     console.log(`Node.js server running on port ${PORT}`);

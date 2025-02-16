@@ -1,9 +1,8 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
 import cors from 'cors';
-
+require("dotenv").config();
 const app = express();
-const PORT = 3001;
 app.use(cors());
 
 // Replace with your MongoDB connection string
@@ -52,6 +51,11 @@ app.get('/predict-ventilator', async (req, res) => {
     }
 });
 
+app.get("/", (req, res) => {
+    res.send("Ventilator, Render!");
+  });
+
+const PORT = process.env.PORT || 3001; // Use environment port or fallback to 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Node.js server running on port ${PORT}`);
 });
