@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from pymongo import MongoClient
+import os
 
 app = Flask(__name__)
 
@@ -40,5 +41,10 @@ def process_data():
 
     return jsonify(sorted_patients[:100])  # Return top 100 high-priority patients
 
+@app.route('/')
+def home():
+    return "AI Model Working!"
+
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 10000)) 
+    app.run(host="0.0.0.0", port=port, debug=True)
