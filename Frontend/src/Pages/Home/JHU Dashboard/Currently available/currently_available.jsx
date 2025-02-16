@@ -11,7 +11,7 @@ function Resources() {
   useEffect(() => {
     // Fetch users from the server
     axios
-      .get("http://localhost:3000/all_resources")
+      .get("https://jhu-techlions.onrender.com/all_resources")
       .then((response) => {
         setResourcesRecords(response.data);
         setError(null);

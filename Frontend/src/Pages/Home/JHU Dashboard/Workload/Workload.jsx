@@ -9,7 +9,7 @@ function Workload() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:3001/patients")  // Fetch data from Node.js server
+    axios.get("https://jhu-techlions-ai-node.onrender.com/patients")  // Fetch data from Node.js server
       .then(response => {
         setPatients(response.data);  // Store data in state
         setLoading(false);

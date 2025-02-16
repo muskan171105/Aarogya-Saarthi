@@ -43,7 +43,7 @@ function Add_patients() {
     console.log(formData);
     try {
       console.log(token);
-      const response = await axios.post('http://localhost:3000/add_patient', formData, {headers: {
+      const response = await axios.post('https://jhu-techlions.onrender.com/add_patient', formData, {headers: {
         'Authorization': `Bearer ${token}`,
       },});
       if (response.status == 200 ) {

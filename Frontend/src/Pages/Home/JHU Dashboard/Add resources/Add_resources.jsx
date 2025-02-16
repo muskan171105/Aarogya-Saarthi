@@ -30,7 +30,7 @@ function Add_resources() {
     e.preventDefault();
     console.log(formData);
     try {
-      const response = await axios.post('http://localhost:3000/add_resources', formData, {headers: {
+      const response = await axios.post('https://jhu-techlions.onrender.com/add_resources', formData, {headers: {
         'Authorization': `Bearer ${token}`,
       },});
       if (response.status == 200 ) {

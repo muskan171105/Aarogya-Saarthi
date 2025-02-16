@@ -12,7 +12,7 @@ function Staff() {
   useEffect(() => {
     // Fetch users from the server
     axios
-      .get("http://localhost:3000/staff")
+      .get("https://jhu-techlions.onrender.com/staff")
       .then((response) => {
         setEmployeeData(response.data);
         setError(null);

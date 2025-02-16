@@ -9,7 +9,7 @@ function BloodBank() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get("http://localhost:3001/blood_data")
+        axios.get("https://jhu-techlions-blood-bank-node.onrender.com/blood_data")
             .then(response => {
                 setBloodData(response.data);
                 setLoading(false);

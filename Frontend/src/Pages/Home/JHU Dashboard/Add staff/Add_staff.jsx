@@ -33,7 +33,7 @@ function AddStaff() {
       console.log(formData);
       try {
         console.log(token);
-        const response = await axios.post('http://localhost:3000/add_staff', formData, {headers: {
+        const response = await axios.post('https://jhu-techlions.onrender.com/add_staff', formData, {headers: {
           'Authorization': `Bearer ${token}`,
         },});
         if (response.status == 200 ) {

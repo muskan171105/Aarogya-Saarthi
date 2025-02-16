@@ -11,7 +11,7 @@ function Beds_requirement() {
 
     useEffect(() => {
         // Fetch actual bed data (October - February)
-        axios.get("http://localhost:3001/fetch-data")
+        axios.get("https://jhu-techlions-bed-node.onrender.com/fetch-data")
             .then(response => {
                 // Convert object response into an array of { month, bed_count } objects
                 const formattedData = Object.entries(response.data).map(([month, bed_count]) => ({
@@ -27,7 +27,7 @@ function Beds_requirement() {
             });
 
         // Fetch predicted bed data (March - May)
-        axios.get("http://localhost:3001/predict-beds")
+        axios.get("https://jhu-techlions-bed-node.onrender.com/predict-beds")
             .then(response => {
                 setPredictedData(response.data);
             })
