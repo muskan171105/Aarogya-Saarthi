@@ -7,13 +7,15 @@ app.use(cors());
 
 app.get("/patients", async (req, res) => {
     try {
-        const response = await axios.get("http://127.0.0.1:5000/process");
+        const response = await axios.get("https://jhu-techlions-ai-model.onrender.com/process");
         res.json(response.data);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-app.listen(3001, () => {
-    console.log("Node.js server running on http://localhost:3001");
+const PORT = process.env.PORT || 3001; // Use environment port or fallback to 3001
+app.listen(PORT, () => {
+    console.log(`Node.js server running on port ${PORT}`);
 });
+
