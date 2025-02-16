@@ -5,3 +5,4 @@ scikit-learn
 gunicorn
 pymongo
 joblib
+flask-cors
