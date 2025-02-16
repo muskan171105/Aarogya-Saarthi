@@ -74,7 +74,7 @@ def predict_ppe():
 
 @app.route('/')
 def home():
-    return "Hello, Render!"
+    return "PPE API Running!"
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000)) 
