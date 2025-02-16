@@ -15,7 +15,7 @@ import Diagnostic_Equipments from './Pages/Home/JHU Dashboard/Diagnostic Equipme
 import Beds_requirement from './Pages/Home/JHU Dashboard/Beds requirement/Beds_requirement';
 import BloodBank from './Pages/Home/JHU Dashboard/Blood Bank/Blood_Bank';
 import Resources from './Pages/Home/JHU Dashboard/Currently available/currently_available';
-import Home_page from './Pages/Home/Main/HomePage/Home_page';
+import Home_page from './Pages/Home/Main/Homepage/Home_page';
 import About_Page from './Pages/Home/Main/About_page/About_Page';
 import ContactUs from './Pages/Home/Main/Contact us/Contactus_page';
 import Services from './Pages/Home/Main/Services_page/Services';
