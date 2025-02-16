@@ -77,6 +77,11 @@ def get_blood_data():
 
     return jsonify(result)
 
+
+@app.route("/")
+def home():
+    return "Blood Bank API is running!"
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000)) 
     app.run(host="0.0.0.0", port=port, debug=True)
