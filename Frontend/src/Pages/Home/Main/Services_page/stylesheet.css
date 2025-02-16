@@ -103,6 +103,7 @@ nav{
     margin-right: 2%;
     border-radius: 30px;
     margin-bottom: 20px;
+    max-height: 1100px;
 }
 
 .functioning{
@@ -241,4 +242,13 @@ nav{
 
 .service-content a:hover {
     text-decoration: underline;
+}
+
+
+#redbox1{
+    min-height: 600px;
+}
+
+#navlenght{
+    width: 500px;
 }

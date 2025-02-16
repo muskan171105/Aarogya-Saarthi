@@ -19,6 +19,7 @@ import Home_page from './Pages/Home/Main/HomePage/Home_page';
 import About_Page from './Pages/Home/Main/About_page/About_Page';
 import ContactUs from './Pages/Home/Main/Contact us/Contactus_page';
 import Services from './Pages/Home/Main/Services_page/Services';
+import TMC from './Pages/Home/Main/TandC/TandC';
 
 function App() {
   
@@ -45,6 +46,7 @@ function App() {
         <Route path="/about" element={<About_Page />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/policy" element={<TMC />} />
         <Route path="*" element={<Navigate to="/" />} />
         
       </Routes> 

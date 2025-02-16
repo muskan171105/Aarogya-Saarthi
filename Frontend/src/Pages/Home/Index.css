@@ -6,7 +6,7 @@
   }
   
   body{
-      background: url('src/assets/DD.png');
+
       background-size: cover;
       background-position: center;
       min-height: 100vh;
@@ -17,7 +17,7 @@
       height: 100%;
       width: 100%;
       position: absolute;
-      top: 5em;
+      background: url('src/assets/DD.png');
   }
   
   #whitebox {
@@ -26,6 +26,7 @@
       position: absolute;
       top: 38%;
       left: 50%;
+      margin-top: 5em;
       transform: translate(-50%, -50%);
       background-color: rgba(255, 255, 255, 0.196);
       border: 2px solid rgba(255, 255, 255, 0.196);
@@ -61,7 +62,6 @@
   }
   
   .input-field {
-      width: 100%;
       padding: 10px 10px;
       margin: 5px auto;
       font-weight: bolder;
@@ -92,10 +92,11 @@
   }
   
   .submit-btn:hover {
-      background-color: transparent;
-      color: rgb(226, 167, 90);
-      border: 1px solid rgb(226, 167, 90);
+      background-color:darkslategrey ;
+      color: rgb(255, 255, 255);
+      border: 1px solid rgb(255, 255, 255);
       font-weight: 30px;
+      filter: brightness(90%);
   }
   
   .check-box {
@@ -191,3 +192,34 @@
    text-align: center;
 }
 
+
+.input-field{
+    width: 1000px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.input-field {
+    min-width: 300px; /* Ensure minimum width */
+    width: 100%;
+    max-width: 300px; /* Prevent too wide inputs */
+}

@@ -1,34 +1,34 @@
 import "./stylesheet.css";
 import { Link } from "react-router-dom";
 
-function About_Page() {
+function AboutPage() {
   return (
-    <div className="background-image">
+    <div className="background-image" style={{ overflow: 'scroll' }}>
       <nav>
         <div className="logo">
-          <a href="../Homepage/Home_page.jsx">
-            <img src="../src/assets/logo.png" alt="Hriday Tarni Logo" />
-          </a>
+          <Link to="/">
+            <img src="src/assets/logo.png" alt="Hriday Tarni Logo" />
+          </Link>
         </div>
-        <div className="nav-menu">
+        <div className="nav-menu" id="navlenght">
           <div className="menu">
             <Link to="/">Home</Link>
-            <Link to="/about"> About</Link>
-            <Link to="/services" >Services</Link>
+            <Link to="/about">About</Link>
+            <Link to="/services">Services</Link>
             <Link to="/contact">Contact Us</Link>
           </div>
         </div>
         <div className="register">
-        <Link to="/login">Login</Link>
+          <Link to="/login">Login</Link>
         </div>
       </nav>
       <div className="about">
         <h1>About Us</h1>
       </div>
-      <div className="redbox">
+      <div className="redbox" style={{ height: '2000%' }}>
         <h1 className="Mission">Our Mission</h1>
         <div id="Heart1">
-          <img src="../src/assets/Photo1.jpeg" alt="Heart image 1" className="Heart1" />
+          <img src="src/assets/Photo1.jpeg" alt="Heart image 1" className="Heart1" />
         </div>
         <p id="p1">
           The mission of Aarogya Saarthi is to develop an advanced healthcare management
@@ -48,7 +48,7 @@ function About_Page() {
         </p>
         <h1 className="Vision">Our Vision</h1>
         <div id="Heart2">
-          <img src="../src/assets/Photo2.jpeg" alt="Heart image 2" className="Heart2" />
+          <img src="src/assets/Photo2.jpeg" alt="Heart image 2" className="Heart2" />
         </div>
         <p id="p2">
           The vision of Aarogya Saarthi is to transform healthcare through technology by
@@ -66,18 +66,18 @@ function About_Page() {
         </p>
         <h1 className="Members">The Team</h1>
         <div className="members">
-          <img src="../src/assets/Muskan.jpeg.jpg" alt="" className="Photo" />
-          <img src="../src/assets/Sparsh.jpg" alt="" className="Photo" />
-          <img src="../src/assets/Praghalb.jpg" alt="" className="Photo" />
-          <img src="../src/assets/Shoraya.jpg" alt="" className="Photo" />
-          <img src="../src/assets/Prarabdh.jpg" alt="" className="Photo" />
+          <img src="src/assets/Muskan.jpeg.jpg" alt="Muskan Srivastav" className="Photo" />
+          <img src="src/assets/Sparsh.jpg" alt="Sparsh Sahni" className="Photo" />
+          <img src="src/assets/Praghalb.jpg" alt="Pragalbh Sharma" className="Photo" />
+          <img src="src/assets/Shoraya.jpg" alt="Shorya Pathak" className="Photo" />
+          <img src="src/assets/Prarabdh.jpg" alt="Prarabhd Soni" className="Photo" />
         </div>
         <div className="name-section">
-          <h1 className="name">Mukan Srivastav<br /><span>Blockchain Developer</span></h1>
-          <h1 className="name">Sparsh Sahni<br /><span>Frontend Developer</span></h1>
-          <h1 className="name">Pragalbh Sharma<br /><span>ML Developer</span></h1>
-          <h1 className="name">Shorya Pathak<br /><span>ML Developer</span></h1>
-          <h1 className="name">Prarabhd Soni<br /><span>Backend Developer</span></h1>
+          <h1 className="name">Muskan Srivastav<br /></h1>
+          <h1 className="name">Sparsh Sahni<br /></h1>
+          <h1 className="name">Pragalbh Sharma<br /></h1>
+          <h1 className="name">Shorya Pathak<br /></h1>
+          <h1 className="name">Prarabhd Soni<br /></h1>
         </div>
       </div>
       <div className="footer">
@@ -87,4 +87,4 @@ function About_Page() {
   );
 }
 
-export default About_Page;
+export default AboutPage;
