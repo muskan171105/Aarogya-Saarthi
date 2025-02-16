@@ -2,7 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
+import mongoose from "mongoose";
 import env from 'dotenv';
+import cron from "node-cron";
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -45,6 +47,12 @@ async function connectToDatabase() {
 
 connectToDatabase();
 
+// Connect to MongoDB (Mongoose for salary processing)
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
 // Recreate __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -65,6 +73,96 @@ const authenticateToken = (req, res, next) => {
       next();
     });
 };
+
+// Employee Schema (Salary Management)
+const EmployeeSchema = new mongoose.Schema({
+  emp_id: Number,
+  first_name: String,
+  last_name: String,
+  email: String,
+  Salary: Number,
+  bank_account: String,
+  Net_Salary: Number,
+});
+
+const Employee = mongoose.model("Staff", EmployeeSchema);
+
+// Dummy Hospital Bank Account
+let hospitalBankBalance = 100000000; // ₹100M initial balance
+
+// Function to calculate tax based on Indian tax slabs
+const calculateTax = (annualSalary) => {
+  let taxableIncome = Math.max(annualSalary - 50000, 0);
+  let tax = 0;
+  if (taxableIncome <= 250000) {
+    tax = 0;
+  } else if (taxableIncome <= 500000) {
+    tax = (taxableIncome - 250000) * 0.05;
+  } else if (taxableIncome <= 1000000) {
+    tax = (250000 * 0.05) + (taxableIncome - 500000) * 0.20;
+  } else {
+    tax = (250000 * 0.05) + (500000 * 0.20) + (taxableIncome - 1000000) * 0.30;
+  }
+  return tax;
+};
+
+// Payroll Processing API
+app.post("/process_salaries", authenticateToken, async (req, res) => {
+  try {
+    const employees = await Employee.find({});
+    let totalSalaryPaid = 0;
+
+    employees.forEach(async (employee) => {
+      const tax = calculateTax(employee.Salary);
+      const monthlySalary = (employee.Salary - tax) / 12;
+      totalSalaryPaid += monthlySalary;
+
+      await Employee.updateOne(
+        { emp_id: employee.emp_id },
+        { $set: { Net_Salary: monthlySalary } }
+      );
+    });
+
+    if (hospitalBankBalance >= totalSalaryPaid) {
+      hospitalBankBalance -= totalSalaryPaid;
+      res.status(200).json({ message: "Salaries processed successfully", totalSalaryPaid });
+    } else {
+      res.status(400).json({ message: "Insufficient funds" });
+    }
+  } catch (err) {
+    console.error("Error processing salaries:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Automate Salary Processing Every Month
+cron.schedule("0 0 1 * *", async () => {
+  console.log("Running Monthly Salary Processing...");
+  try {
+    const employees = await Employee.find({});
+    let totalSalaryPaid = 0;
+
+    employees.forEach(async (employee) => {
+      const tax = calculateTax(employee.Salary);
+      const monthlySalary = (employee.Salary - tax) / 12;
+      totalSalaryPaid += monthlySalary;
+
+      await Employee.updateOne(
+        { emp_id: employee.emp_id },
+        { $set: { Net_Salary: monthlySalary } }
+      );
+    });
+
+    if (hospitalBankBalance >= totalSalaryPaid) {
+      hospitalBankBalance -= totalSalaryPaid;
+      console.log("Salaries processed successfully. Total paid:", totalSalaryPaid);
+    } else {
+      console.log("Insufficient funds for salary payment.");
+    }
+  } catch (err) {
+    console.error("Error in scheduled salary processing:", err);
+  }
+});
 
 // Login route
 app.post('/login', async (req, res) => {
