@@ -5,6 +5,7 @@ import joblib
 from pymongo import MongoClient
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
+import os
 
 # Connect to MongoDB
 client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")  
@@ -71,10 +72,10 @@ def predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/')
+def home():
+    return "Hello, Render!"
+
 if __name__ == '__main__':
-    try:
-        train_model()  # Train model on startup
-    except Exception as e:
-        print(f"Error training model on startup: {e}")
-    
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get("PORT", 10000)) 
+    app.run(host="0.0.0.0", port=port, debug=True)
