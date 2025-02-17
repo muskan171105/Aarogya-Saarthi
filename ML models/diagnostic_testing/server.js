@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 const cors = require("cors");
 const { MongoClient } = require("mongodb");
-require("dotenv").config();
+// require("dotenv").config();
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
@@ -74,7 +74,7 @@ app.get("/", (req, res) => {
     res.send("Diagnostic, Render!");
   });
 
-const PORT = process.env.PORT || 3001; // Use environment port or fallback to 3001
+const PORT = 3004; // Use environment port or fallback to 3001
 app.listen(PORT, () => {
     console.log(`Node.js server running on port ${PORT}`);
 });

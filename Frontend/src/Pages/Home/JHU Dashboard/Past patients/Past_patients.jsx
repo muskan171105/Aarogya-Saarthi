@@ -10,7 +10,7 @@ function PastPatient() {
   useEffect(() => {
     // Fetch users from the server
     axios
-      .get("https://jhu-techlions.onrender.com/past_patients")
+      .get("http://localhost:3000/past_patients")
       .then((response) => {
         setpatientRecords(response.data);
         setError(null);

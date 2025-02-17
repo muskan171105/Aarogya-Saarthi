@@ -29,7 +29,7 @@ function Diagnostic_Equipments() {
       setLoading(true);
       setError(null);
 
-      const response = await fetch("https://jhu-techlions-medicalequipments-node.onrender.com/get_stock_with_prediction");
+      const response = await fetch("http://localhost:3003/get_stock_with_prediction");
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Failed to fetch stock data");
 

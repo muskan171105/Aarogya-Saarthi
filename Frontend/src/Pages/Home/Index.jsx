@@ -28,7 +28,7 @@ const [check, setCheck] = useState(false);
     // alert("Login clicked");
     setError(null);
     try {
-        const response = await axios.post('https://jhu-techlions.onrender.com/login', formData);
+        const response = await axios.post('http://localhost:3000/login', formData);
         if (response.status == 200 || response.id) {
             localStorage.setItem('userId', response.data.token);
             navigate('/dashboard');

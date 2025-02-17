@@ -11,7 +11,7 @@ function PPE() {
 
   useEffect(() => {
       console.log("hi");
-      axios.get("https://jhu-techlions-ppe-node.onrender.com/fetch_ppe")
+      axios.get("http://localhost:3002/fetch_ppe")
           .then(response => {
             console.log("Raw API Response:", response.data);
         
@@ -35,7 +35,7 @@ function PPE() {
               setLoading(false);
           });
 
-      axios.get("https://jhu-techlions-ppe-node.onrender.com/predict_ppe")
+      axios.get("http://localhost:3002/predict_ppe")
           .then(response => {
               console.log("predicted data", response.data);
               setPredictedData(response.data);

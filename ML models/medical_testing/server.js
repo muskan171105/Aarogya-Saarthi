@@ -37,5 +37,5 @@ app.get("/", (req, res) => {
   });
 
 // Start the server
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3003;
 app.listen(PORT, () => console.log(`Node.js server running on port ${PORT}`));

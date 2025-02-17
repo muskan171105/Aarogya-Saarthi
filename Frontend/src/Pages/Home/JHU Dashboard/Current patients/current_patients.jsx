@@ -11,7 +11,7 @@ function CurrentPatients() {
   useEffect(() => {
     // Fetch users from the server
     axios
-      .get("https://jhu-techlions.onrender.com/patients")
+      .get("http://localhost:3000/patients")
       .then((response) => {
         setpatientRecords(response.data);
         setError(null);

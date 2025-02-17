@@ -18,7 +18,7 @@ function SideBar(){
           return;
         }
   
-        const response = await axios.get("https://jhu-techlions.onrender.com/auth", {
+        const response = await axios.get("http://localhost:3000/auth", {
           headers: { Authorization: `Bearer ${token}` },
         });
   

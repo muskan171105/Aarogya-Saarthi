@@ -9,7 +9,7 @@ function Ventilator() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get("https://jhu-techlions-ventilator-testing-node.onrender.com/predict-ventilator")
+        axios.get("http://localhost:3001/predict-ventilator")
             .then(response => {
                 const { input_data, predicted_data } = response.data;
                 console.log("input_data", input_data);

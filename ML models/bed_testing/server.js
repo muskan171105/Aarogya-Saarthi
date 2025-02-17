@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const FLASK_API_URL = 'https://jhu-techlions-bed-testing.onrender.com';
+const FLASK_API_URL = 'http://127.0.0.1:5000';
 const MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/";
 const DB_NAME = "AarogyaSaarthi";
 const COLLECTION_NAME = "Bed";
@@ -90,7 +90,7 @@ app.get("/", (req, res) => {
     res.send("Bed, Render!");
   });
 
-const PORT = process.env.PORT || 3001; // Use environment port or fallback to 3001
+const PORT = process.env.PORT || 3006; // Use environment port or fallback to 3001
 app.listen(PORT, () => {
     console.log(`Node.js server running on port ${PORT}`);
 });

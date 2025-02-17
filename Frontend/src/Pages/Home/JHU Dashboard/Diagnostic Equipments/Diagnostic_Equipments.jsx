@@ -33,7 +33,7 @@ function Diagnostic_Equipments() {
       setError(null);
 
       // Fetch current stock from Node.js API
-      const stockResponse = await fetch("https://jhu-techlions-diagnostic-equipments-node.onrender.com/get_all_stock", {
+      const stockResponse = await fetch("http://localhost:3004/get_all_stock", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -42,7 +42,7 @@ function Diagnostic_Equipments() {
       if (!stockResponse.ok) throw new Error(stockData.error || "Failed to fetch stock data");
 
       // Fetch predicted stock from Node.js API
-      const predictionResponse = await fetch("https://jhu-techlions-diagnostic-equipments-node.onrender.com/predict_future_stock", {
+      const predictionResponse = await fetch("http://localhost:3004/predict_future_stock", {
         method: "GET", // CHANGED FROM POST TO GET
         headers: { "Content-Type": "application/json" },
       });
