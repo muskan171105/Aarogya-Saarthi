@@ -5,10 +5,10 @@ require("dotenv").config();
 const app = express();
 
 // Flask API URL
-const FLASK_API_URL = "https://jhu-techlions-blood-bank.onrender.com/blood_data";  // Change if Flask runs on a different port
+const FLASK_API_URL = "https://jhu-techlions-blood-bank.onrender.com";  // Change if Flask runs on a different port
 
 // Enable CORS for your frontend
-app.use(cors({ origin: "https://aarogya-saarthi.onrender.com" }));  
+app.use(cors());  
 
 app.get("/blood_data", async (req, res) => {
     try {
