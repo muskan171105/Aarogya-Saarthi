@@ -8,7 +8,7 @@ app.use(cors());
 
 app.get("/patients", async (req, res) => {
     try {
-        const response = await axios.get("http://127.0.0.1:5000/process");
+        const response = await axios.get("http://127.0.0.1:12000/process");
         res.json(response.data);
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -5,7 +5,7 @@ require("dotenv").config();
 const app = express();
 
 // Flask API URL
-const FLASK_API_URL = "https://jhu-techlions-blood-bank.onrender.com/blood_data";  // Change if Flask runs on a different port
+const FLASK_API_URL = "http://127.0.0.1:16000/blood_data";  // Change if Flask runs on a different port
 
 // Enable CORS for your frontend
 app.use(cors());  
