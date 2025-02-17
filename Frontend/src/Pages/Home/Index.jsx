@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import "./Index.css";
 import {Link} from "react-router-dom"
+import DD from "../../assets/DD.png"
 
 function Home() {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const HandleCheck = () => {
   setCheck(!check);
 }
   return (
-    <div className="login-page">
+    <div className="login-page" style={{background: `url(${DD})`}}>
       <div id="whitebox">
         <div id="name">
           <h1>Aarogya Saarthi</h1>
