@@ -27,7 +27,7 @@ function Beds_requirement() {
             });
 
         // Fetch predicted bed data (March - May)
-        axios.get("https://jhu-techlions-bed-node.onrender.com/predict-beds")
+        axios.get("https://jhu-techlions-bed-node.onrender.com/predict-beds", { timeout: 120000 })
             .then(response => {
                 setPredictedData(response.data);
             })
