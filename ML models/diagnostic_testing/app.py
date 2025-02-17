@@ -3,9 +3,11 @@ import joblib
 import os
 import random
 from pymongo import MongoClient
+from flask_cors import CORS
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)
 
 # Connect to MongoDB
 client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")
