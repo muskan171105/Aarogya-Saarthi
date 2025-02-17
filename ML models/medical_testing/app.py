@@ -7,7 +7,7 @@ from flask_cors import CORS
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app)  # Enable CORS for cross-origin requests
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Connect to MongoDB
 client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")
