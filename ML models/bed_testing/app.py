@@ -6,6 +6,11 @@ from pymongo import MongoClient
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 import os
+from flask_cors import CORS
+
+# Initialize Flask app
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Connect to MongoDB
 client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")  
@@ -34,8 +39,6 @@ def train_model():
     joblib.dump(model, 'hospital_bed_model.pkl')  # Save trained model
     return model
 
-# Initialize Flask app
-app = Flask(__name__)
 
 @app.route('/train', methods=['GET'])
 def retrain():
