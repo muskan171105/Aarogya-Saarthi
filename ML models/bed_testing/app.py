@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 import numpy as np
 import pandas as pd
 import joblib
@@ -7,14 +7,10 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 import os
 from flask_cors import CORS
-from celery import Celery
 
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
-
-# Configure Celery (for asynchronous task processing)
-celery = Celery(app.name, broker="redis://localhost:6379/0")  # Assuming Redis is running locally
 
 # Connect to MongoDB
 client = MongoClient("mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/")  
@@ -43,6 +39,7 @@ def train_model():
     joblib.dump(model, 'hospital_bed_model.pkl')  # Save trained model
     return model
 
+
 @app.route('/train', methods=['GET'])
 def retrain():
     try:
@@ -54,11 +51,12 @@ def retrain():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Load the trained model (load only when needed to save memory)
+        # Load the trained model
         model = joblib.load('hospital_bed_model.pkl')
 
         # Fetch latest data from MongoDB to get input values
         latest_data = fetch_data().iloc[-1]  # Get the most recent record
+
         input_features = latest_data[['October', 'November', 'December', 'January', 'February']].values.reshape(1, -1)
 
         # Make prediction
@@ -72,10 +70,6 @@ def predict():
             "Next_3_Months": int(prediction[3])
         }
 
-        # Free memory after prediction
-        del model
-        torch.cuda.empty_cache()
-
         return jsonify(response)
 
     except Exception as e:
@@ -84,11 +78,6 @@ def predict():
 @app.route('/')
 def home():
     return "Hello, Render!"
-
-# Start Celery worker in background for asynchronous processing
-@celery.task(name='tasks.retrain_model')
-def retrain_model_task():
-    train_model()
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000)) 
