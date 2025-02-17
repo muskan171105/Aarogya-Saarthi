@@ -1,5 +1,6 @@
 import "./stylesheet.css";
 import { Link } from "react-router-dom";
+import logo from "../../../../assets/logo.png"
 
 function AboutPage() {
   return (
@@ -7,7 +8,7 @@ function AboutPage() {
       <nav>
         <div className="logo">
           <Link to="/">
-            <img src="src/assets/logo.png" alt="Hriday Tarni Logo" />
+            <img src={logo} alt="Hriday Tarni Logo" />
           </Link>
         </div>
         <div className="nav-menu" id="navlenght">

@@ -11,7 +11,7 @@ function ContactUs() {
       <nav>
         <div className="logo">
           <a href="../Homepage/Home_page.jsx">
-            <img src="../src/assets/logo.png" alt="Aarogya Saarthi Logo" />
+            <img src={logo} alt="Aarogya Saarthi Logo" />
           </a>
         </div>
         <div className="nav-menu" id="navlenght">
