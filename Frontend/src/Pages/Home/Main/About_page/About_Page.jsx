@@ -1,6 +1,13 @@
 import "./stylesheet.css";
 import { Link } from "react-router-dom";
 import logo from "../../../../assets/logo.png"
+import mission from "../../../../assets/Photo1.jpeg"
+import vission from "../../../../assets/Photo2.jpeg"
+import muskan from "../../../../assets/Muskan.jpeg.jpg"
+import sparsh from "../../../../assets/Sparsh.jpg"
+import shorya from "../../../../assets/Shoraya.jpg"
+import prarabdh from "../../../../assets/Prarabdh.jpg"
+import pragalbh from "../../../../assets/Praghalbh.jpg"
 
 function AboutPage() {
   return (
@@ -29,7 +36,7 @@ function AboutPage() {
       <div className="redbox" style={{ height: '2000%' }}>
         <h1 className="Mission">Our Mission</h1>
         <div id="Heart1">
-          <img src="src/assets/Photo1.jpeg" alt="Heart image 1" className="Heart1" />
+          <img src={mission} alt="Heart image 1" className="Heart1" />
         </div>
         <p id="p1">
           The mission of Aarogya Saarthi is to develop an advanced healthcare management
@@ -49,7 +56,7 @@ function AboutPage() {
         </p>
         <h1 className="Vision">Our Vision</h1>
         <div id="Heart2">
-          <img src="src/assets/Photo2.jpeg" alt="Heart image 2" className="Heart2" />
+          <img src={vission} alt="Heart image 2" className="Heart2" />
         </div>
         <p id="p2">
           The vision of Aarogya Saarthi is to transform healthcare through technology by
@@ -67,11 +74,11 @@ function AboutPage() {
         </p>
         <h1 className="Members">The Team</h1>
         <div className="members">
-          <img src="src/assets/Muskan.jpeg.jpg" alt="Muskan Srivastav" className="Photo" />
-          <img src="src/assets/Sparsh.jpg" alt="Sparsh Sahni" className="Photo" />
-          <img src="src/assets/Praghalb.jpg" alt="Pragalbh Sharma" className="Photo" />
-          <img src="src/assets/Shoraya.jpg" alt="Shorya Pathak" className="Photo" />
-          <img src="src/assets/Prarabdh.jpg" alt="Prarabhd Soni" className="Photo" />
+          <img src={muskan} alt="Muskan Srivastav" className="Photo" />
+          <img src={sparsh} alt="Sparsh Sahni" className="Photo" />
+          <img src={pragalbh} alt="Pragalbh Sharma" className="Photo" />
+          <img src={shorya} alt="Shorya Pathak" className="Photo" />
+          <img src={prarabdh} alt="Prarabhd Soni" className="Photo" />
         </div>
         <div className="name-section">
           <h1 className="name">Muskan Srivastav<br /></h1>
