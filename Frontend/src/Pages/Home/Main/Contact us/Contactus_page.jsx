@@ -12,7 +12,7 @@ function ContactUs() {
       <nav>
         <div className="logo">
           <a href="../Homepage/Home_page.jsx">
-            <img src={logo} alt="Aarogya Saarthi Logo" />
+            <img src={logo} alt="Aarogya Saarthi Logo" style={{height: 150, width: 150, marginTop: 60, marginLeft: -30}} />
           </a>
         </div>
         <div className="nav-menu" id="navlenght">

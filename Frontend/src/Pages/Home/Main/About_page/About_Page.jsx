@@ -15,7 +15,7 @@ function AboutPage() {
       <nav>
         <div className="logo">
           <Link to="/">
-            <img src={logo} alt="Hriday Tarni Logo" />
+            <img src={logo} alt="Hriday Tarni Logo" style={{height: 150, width: 150, marginTop: 60, marginLeft: -30}}/>
           </Link>
         </div>
         <div className="nav-menu" id="navlenght">
