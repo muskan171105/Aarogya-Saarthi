@@ -1,8 +1,10 @@
 from flask import Flask, jsonify
 from pymongo import MongoClient
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Connect to MongoDB Atlas
 MONGO_URI = "mongodb+srv://Prarabdh:db.prarabdh.soni@prarabdh.ezjid.mongodb.net/"
