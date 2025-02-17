@@ -6,3 +6,4 @@ gunicorn
 pymongo
 joblib
 flask-cors
+celery
