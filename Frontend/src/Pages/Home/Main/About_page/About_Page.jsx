@@ -7,7 +7,7 @@ import muskan from "../../../../assets/Muskan.jpeg.jpg"
 import sparsh from "../../../../assets/Sparsh.jpg"
 import shorya from "../../../../assets/Shoraya.jpg"
 import prarabdh from "../../../../assets/Prarabdh.jpg"
-import pragalbh from "../../../../assets/Praghalbh.jpg"
+import pragalbh from "../../../../assets/Praghalb.jpg"
 
 function AboutPage() {
   return (
