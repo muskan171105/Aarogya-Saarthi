@@ -25,7 +25,7 @@ function TMC() {
       
       <h2>1. Definitions</h2>
       <ul>
-        <li><strong>Software:</strong> The healthcare management and monitoring system developed by [Your Team Name].</li>
+        <li><strong>Software:</strong> The healthcare management and monitoring system developed by Tech Lions.</li>
         <li><strong>User:</strong> Any individual or entity accessing or using the Software.</li>
         <li><strong>We/Us/Our:</strong> The developers and operators of the Software.</li>
         <li><strong>Data:</strong> Any information collected, processed, or displayed within the Software.</li>
@@ -50,7 +50,7 @@ function TMC() {
       </ul>
       
       <h2>6. Intellectual Property Rights</h2>
-      <p>All content, trademarks, and software code within the Software are the property of [Your Team Name]...</p>
+      <p>All content, trademarks, and software code within the Software are the property of Tech Lions...</p>
       
       <h2>7. Limitation of Liability</h2>
       <p>The Software is provided on an "AS-IS" basis, without warranties of any kind...</p>
@@ -59,7 +59,7 @@ function TMC() {
       <p>We reserve the right to terminate or restrict access to the Software at any time if a user is found violating these Terms...</p>
       
       <h2>9. Governing Law</h2>
-      <p>These Terms are governed by the laws of [Your Country/State]...</p>
+      <p>These Terms are governed by the laws of India...</p>
       
       <h2>10. Changes to Terms</h2>
       <p>We may update these Terms from time to time...</p>

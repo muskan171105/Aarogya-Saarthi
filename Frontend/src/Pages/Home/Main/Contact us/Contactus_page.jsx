@@ -16,7 +16,7 @@ function ContactUs() {
           </a>
         </div>
         <div className="nav-menu" id="navlenght">
-          <div className="menu">
+          <div className="menu" style={{justifyContent: 'center', textAlign: 'center'}}>
           <Link to="/">Home</Link>
             <Link to="/about"> About</Link>
             <Link to="/services" >Services</Link>

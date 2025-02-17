@@ -12,7 +12,7 @@ function Home_page() {
             <img src={logo} alt="Hriday Tarni Logo" style={{height: 150, width: 150, marginTop: 60, marginLeft: -30}}/>
         </div>
         <div className="nav-menu" id="navlenght">
-          <div className="menu">
+          <div className="menu" style={{justifyContent: 'center', textAlign: 'center'}}>
             <Link to="/">Home</Link>
             <Link to="/about"> About</Link>
             <Link to="/services" >Services</Link>
