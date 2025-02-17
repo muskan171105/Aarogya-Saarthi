@@ -3,6 +3,7 @@ import "./style.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import logo from "../../assets/logo.png"
 
 function SideBar(){
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ function SideBar(){
         <>
                 <div className="sidebar close">
         <div className="logo-details">
-          <img className="logo-img" src="../src/assets/logo.png" alt="Logo" />
+          <img className="logo-img" src={logo} alt="Logo" />
           <span className="logo_name">Aarogya Saarthi</span>
         </div>
         

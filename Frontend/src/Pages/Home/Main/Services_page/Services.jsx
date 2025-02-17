@@ -1,6 +1,11 @@
 import "./stylesheet.css";
 import { Link } from "react-router-dom";
 import logo from "../../../../assets/logo.png"
+import AiDriven from "../../../../assets/Photo one.jpg"
+import Blockchain from "../../../../assets/Photo two.jpg"
+import Backend from "../../../../assets/Photo three.jpg"
+import Holistic  from "../../../../assets/Photo four.jpg"
+
 
 function Services() {
   return (
@@ -28,7 +33,7 @@ function Services() {
       </div>
       <div className="redbox" id="redbox1">
         <div className="service-card">
-          <img src="../src/assets/Photo one.jpg" className="service-icon" alt="AI-Driven Insights" />
+          <img src={AiDriven} className="service-icon" alt="AI-Driven Insights" />
           <div className="service-content">
             <h1>AI-Driven Insights :</h1>
             <p>Minimizes manual interventions, enhances efficiency.</p>
@@ -36,7 +41,7 @@ function Services() {
         </div>
 
         <div className="service-card">
-          <img src="../src/assets/Photo two.jpg" className="service-icon" alt="Blockchain Integration" />
+          <img src={Blockchain} className="service-icon" alt="Blockchain Integration" />
           <div className="service-content">
             <h1>Blockchain Integration :</h1>
             <p>Transparency and trust in supply chain validation.</p>
@@ -44,7 +49,7 @@ function Services() {
         </div>
 
         <div className="service-card">
-          <img src="../src/assets/Photo three.jpg" className="service-icon" alt="Scalable Backend" />
+          <img src={Backend} className="service-icon" alt="Scalable Backend" />
           <div className="service-content">
             <h1>Scalable Backend:</h1>
             <p>Smart, and robust backend, ensuring secure transfer of data.</p>
@@ -52,7 +57,7 @@ function Services() {
         </div>
 
         <div className="service-card">
-          <img src="../src/assets/Photo four.jpg" className="service-icon" alt="Holistic Design" />
+          <img src={Holistic} className="service-icon" alt="Holistic Design" />
           <div className="service-content">
             <h1>Holistic Design:</h1>
             <p>Combines patient management, resource tracking, and compliance.</p>
