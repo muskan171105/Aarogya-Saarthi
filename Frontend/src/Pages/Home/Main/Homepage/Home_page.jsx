@@ -1,6 +1,7 @@
 import "./stylesheet.css";
 import { Link } from "react-router-dom";
 import bgImage from "../../../../assets/medical-care.png"
+import logo from "../../../../assets/logo.png"
 
 
 function Home_page() {
@@ -9,7 +10,7 @@ function Home_page() {
       <nav>
         <div className="logo">
           <a href="./Home_page.jsx">
-            <img src="../src/assets/logo.png" alt="Hriday Tarni Logo" />
+            <img src={logo} alt="Hriday Tarni Logo" />
           </a>
         </div>
         <div className="nav-menu" id="navlenght">
