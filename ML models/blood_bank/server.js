@@ -8,7 +8,7 @@ const app = express();
 const FLASK_API_URL = "https://jhu-techlions-blood-bank.onrender.com/blood_data";  // Change if Flask runs on a different port
 
 // Enable CORS for your frontend
-app.use(cors({ origin: "https://aarogya-saarthi.onrender.com" }));  
+app.use(cors());  
 
 app.get("/blood_data", async (req, res) => {
     try {
