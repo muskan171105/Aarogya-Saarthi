@@ -11,6 +11,13 @@ async function connectMongoDB() {
     });
     console.log('Connected to MongoDB');
 
+    // Check if MongoDB supports Change Streams
+    const isReplicaSet = await mongoose.connection.db.admin().serverStatus();
+    if (!isReplicaSet.repl) {
+      console.error('MongoDB is not running as a replica set. Change Streams require a replica set.');
+      process.exit(1);
+    }
+
     mongoose.connection.on("disconnected", () => {
       console.log("⚠ MongoDB disconnected! Reconnecting...");
       setTimeout(connectMongoDB, 5000);
@@ -39,10 +46,36 @@ function generateHash(data) {
 // Function to store hash on Ethereum
 async function storeHashOnBlockchain(dataHash, collectionName) {
   try {
-    console.log(`Storing hash for ${collectionName}: ${dataHash}`);
-    const tx = await contract.storeData(dataHash, collectionName);
-    await tx.wait();
-    console.log(`Hash stored successfully for ${collectionName}: ${dataHash}`);
+    console.log(`Attempting to store hash for ${collectionName}: ${dataHash}`);
+
+    // Check wallet balance
+    const balance = await provider.getBalance(wallet.address);
+    if (ethers.utils.formatEther(balance) < 0.001) {
+      console.error("Insufficient ETH balance. Please add funds to the wallet.");
+      return;
+    }
+
+    // Check if the contract is deployed
+    const contractCode = await provider.getCode(process.env.CONTRACT_ADDRESS);
+    if (contractCode === "0x") {
+      console.error("Contract is not deployed at the given address.");
+      return;
+    }
+
+    // Estimate gas limit with a 20% buffer
+    const estimatedGasLimit = await contract.estimateGas.storeData(dataHash, collectionName);
+    const gasLimitWithBuffer = estimatedGasLimit.mul(120).div(100); // Increase by 20%
+
+    console.log(`Estimated Gas Limit: ${estimatedGasLimit.toString()}`);
+    console.log(`Using Gas Limit with Buffer: ${gasLimitWithBuffer.toString()}`);
+
+    const tx = await contract.storeData(dataHash, collectionName, {
+      gasLimit: gasLimitWithBuffer
+    });
+    console.log(`Transaction sent: ${tx.hash}`);
+
+    const receipt = await tx.wait();
+    console.log(`Transaction mined! Block: ${receipt.blockNumber}, Tx Hash: ${tx.hash}`);
   } catch (error) {
     console.error(`Error storing hash for ${collectionName}:`, error);
   }
@@ -53,30 +86,37 @@ async function watchAllCollections() {
   try {
     const db = mongoose.connection.db;
     const collections = await db.listCollections().toArray();
-    
+
+    if (collections.length === 0) {
+      console.warn("⚠ No collections found in the database.");
+      return;
+    }
+
     console.log("Watching collections:", collections.map(c => c.name));
 
     collections.forEach(async (collection) => {
       const changeStream = db.collection(collection.name).watch([], { fullDocument: "updateLookup" });
 
       changeStream.on("change", async (change) => {
-        try {
-          console.log(`Change detected in ${collection.name}:`, change);
+        console.log(`Detected change in ${collection.name}:`, JSON.stringify(change, null, 2));
 
-          if (["insert", "update"].includes(change.operationType)) {
-            const doc = change.fullDocument;
-            if (doc) {
-              const dataHash = generateHash(doc);
-              await storeHashOnBlockchain(dataHash, collection.name);
-            } else {
-              console.log(`No valid document found in ${collection.name}`);
-            }
+        if (["insert", "update"].includes(change.operationType)) {
+          const doc = change.fullDocument;
+          if (doc) {
+            const dataHash = generateHash(doc);
+            console.log(`Generated hash: ${dataHash}`);
+            await storeHashOnBlockchain(dataHash, collection.name);
+          } else {
+            console.log(`No valid document found in ${collection.name}`);
           }
-        } catch (error) {
-          console.error(`Error processing change in ${collection.name}:`, error);
         }
       });
+
+      changeStream.on("error", (error) => {
+        console.error(`Error in Change Stream for ${collection.name}:`, error);
+      });
     });
+
   } catch (error) {
     console.error("Error watching collections:", error);
   }
