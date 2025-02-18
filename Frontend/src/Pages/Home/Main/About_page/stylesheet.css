@@ -96,14 +96,13 @@ nav{
 }
 
 .redbox {
-    height: 100vh;
+    height: 100%;
     width: 80%;
     border: 2px solid rgb(211, 80, 57) ;
     margin-left: 2%;
     margin-right: 2%;
     border-radius: 30px;
     margin-bottom: 8px;
-    padding-bottom: 20rem;
 }
 
 

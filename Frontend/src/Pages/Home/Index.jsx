@@ -56,7 +56,7 @@ const HandleCheck = () => {
             <input type="password" className="input-field" placeholder="Enter Password" required name="password" value={formData.password} onChange={handleChange}/>
             <div className="checkbox-container">
               <input type="checkbox" className="check-box" id="remember" name="checkbox" onClick={HandleCheck}/>
-              <Link to="/policy" style={{color: 'black'}}>Term and Conditions</Link>
+              <Link to="/policy" style={{color: 'black'}}>Agree to Term and Conditions</Link>
             </div>
             <button type="submit" className="submit-btn" onClick={HandleClick} disabled={check === false}>Log In</button>
             {error && <p style={{ color: 'red' }}>{error}</p>}

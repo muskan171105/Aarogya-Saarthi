@@ -33,7 +33,7 @@ function AboutPage() {
       <div className="about">
         <h1>About Us</h1>
       </div>
-      <div className="redbox" style={{ height: '2000%' }}>
+      <div className="redbox">
         <h1 className="Mission">Our Mission</h1>
         <div id="Heart1">
           <img src={mission} alt="Heart image 1" className="Heart1" />
